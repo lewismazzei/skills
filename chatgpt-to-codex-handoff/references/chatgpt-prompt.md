@@ -7,7 +7,14 @@ Prepare a concise handoff for Codex from this ChatGPT conversation or Project.
 
 The goal is not to summarize the whole conversation chronologically. The goal is to give Codex the minimum actionable context needed to inspect the right local files, make the next change, and verify it without broad rediscovery.
 
-Output Markdown using exactly this structure:
+Output your handoff in a fenced `markdown` code block using exactly this structure:
+
+```markdown
+# Codex Handoff
+...
+```
+
+Inside that fenced block, use this structure:
 
 # Codex Handoff
 
