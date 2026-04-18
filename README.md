@@ -20,6 +20,7 @@ npx skills add https://github.com/lewismazzei/skills/tree/main/chatgpt-to-codex-
 
 Typical uses:
 
+- Invoke `/chatgpt-to-codex-handoff prompt` to print the ChatGPT-side handoff prompt.
 - Ask for a ChatGPT-side prompt that produces a `# Codex Handoff`.
 - Review a handoff before spending Codex time on implementation.
 - Consume a pasted handoff and continue with targeted local repo work.

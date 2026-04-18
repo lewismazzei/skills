@@ -1,6 +1,6 @@
 ---
 name: chatgpt-to-codex-handoff
-description: Prepare, review, and consume structured handoffs from ChatGPT chats or ChatGPT Projects into Codex. Use when the user wants to bring ChatGPT context into Codex, asks for a Codex handoff prompt, says "use this Codex handoff", pastes a "# Codex Handoff", wants to continue from ChatGPT, wants to review a handoff before acting, or wants a concise return handoff from Codex back to ChatGPT while minimizing rediscovery.
+description: Prepare, review, and consume structured handoffs from ChatGPT chats or ChatGPT Projects into Codex. Use when the user wants to bring ChatGPT context into Codex, asks for a Codex handoff prompt, invokes "/chatgpt-to-codex-handoff prompt", says "use this Codex handoff", pastes a "# Codex Handoff", wants to continue from ChatGPT, wants to review a handoff before acting, or wants a concise return handoff from Codex back to ChatGPT while minimizing rediscovery.
 ---
 
 # ChatGPT to Codex Handoff
@@ -11,6 +11,7 @@ Use this skill to move context from ChatGPT into Codex without restarting broad 
 
 Infer the mode from the user request:
 
+- **Slash prompt command**: If the user invokes `/chatgpt-to-codex-handoff prompt`, `/chatgpt-to-codex-handoff chatgpt-prompt`, or a bare `/chatgpt-to-codex-handoff` with no pasted handoff or task, read `references/chatgpt-prompt.md` and return it as a copyable fenced `text` block. Do not inspect local files or start implementation.
 - **Produce handoff prompt**: The user asks for a prompt to summarize a ChatGPT chat or Project for Codex. Read `references/chatgpt-prompt.md` and return a lightly adapted copyable prompt.
 - **Review handoff**: The user asks whether a handoff is good enough, complete, or actionable. Evaluate it and suggest fixes; do not implement.
 - **Consume handoff**: The user pastes a `# Codex Handoff` or says to continue from a handoff. Parse it, validate it, inspect targeted local context, then execute the next task if unblocked.
@@ -90,7 +91,7 @@ If the user approves saving:
 
 ## Produce Handoff Prompt
 
-When the user asks for a ChatGPT-side prompt, read `references/chatgpt-prompt.md` and return the prompt. Adapt the wording only for the user's stated project, thread, repo, or task. Do not inspect local files unless the user explicitly asks.
+When the user asks for a ChatGPT-side prompt, read `references/chatgpt-prompt.md` and return the prompt. This is also the default behavior for `/chatgpt-to-codex-handoff prompt` and for a bare `/chatgpt-to-codex-handoff` when no pasted handoff or task is present. Adapt the wording only for the user's stated project, thread, repo, or task. Do not inspect local files unless the user explicitly asks.
 
 ## Review Handoff
 
