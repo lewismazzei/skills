@@ -1,0 +1,4 @@
+interface:
+  display_name: "ChatGPT to Codex Handoff"
+  short_description: "Bring ChatGPT context into Codex"
+  default_prompt: "Use $chatgpt-to-codex-handoff to turn this ChatGPT project into an actionable Codex handoff."
