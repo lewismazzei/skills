@@ -75,3 +75,26 @@ Typical uses:
 - Analyze a prototype URL into `spec.md`, `analysis.json`, and screenshots.
 - Capture hidden modals, data models, formulas, and AI response maps.
 - Run discovery-only mode before deep analysis.
+
+## to-linear-issues
+
+Convert markdown task lists or planning notes into deduplicated Linear issues.
+
+Install globally for Codex:
+
+```bash
+npx skills add https://github.com/lewismazzei/skills --skill to-linear-issues -g -a codex
+```
+
+Direct folder install:
+
+```bash
+npx skills add https://github.com/lewismazzei/skills/tree/main/to-linear-issues -g -a codex
+```
+
+Typical uses:
+
+- Turn unchecked markdown checklist items into Linear issues.
+- Preview parsed issue titles, labels, priorities, assignees, and provenance before creation.
+- Deduplicate issues with stable external keys in Linear issue descriptions.
+- Sync planning docs into a target Linear team and optional project.
