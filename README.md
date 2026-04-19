@@ -2,6 +2,34 @@
 
 Personal agent skills for AI coding agents.
 
+## Local workflow
+
+This repository is the source of truth for personal skills only. The active
+global Codex install lives outside this repo:
+
+- `~/skills`: personal skill source repo, committed and pushed to GitHub.
+- `~/.agents/skills`: real global install directory used by `npx skills`.
+- `~/.codex/skills`: Codex directory; user skill entries are symlinks to
+  `~/.agents/skills`, while Codex-managed `.system` skills remain here.
+
+Install or update a pushed skill into the global Codex install:
+
+```bash
+add-skill lewismazzei/skills/<skill-name> -y
+```
+
+Test local repo edits before pushing:
+
+```bash
+npx skills add ./<skill-name> -g -a codex -y
+```
+
+Refresh Codex symlinks after a manual install:
+
+```bash
+sync-skills-links
+```
+
 ## chatgpt-to-codex-handoff
 
 Prepare, review, and consume structured handoffs from ChatGPT chats or ChatGPT Projects into Codex. The skill is designed to move context into Codex without restarting broad discovery.
