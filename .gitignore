@@ -1,2 +1,5 @@
 .system/
 __pycache__/
+node_modules/
+prototype-specs/
+*.log
