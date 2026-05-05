@@ -7,6 +7,14 @@ description: Use when creating, revising, or reviewing a handoff script, handoff
 
 Create handoff scripts that are tuned to the model that will run them. Treat OpenAI docs as the source of truth for model-specific prompt guidance; do not rely on remembered prompt tips when current docs can be fetched.
 
+## OpenAI Docs Grounding
+
+Use the `openai-docs` skill and official OpenAI documentation when the handoff depends on current model behavior, model availability, reasoning controls, tool-calling behavior, prompt guidance, structured outputs, or Agents/Responses API details. Do not rely on memory for unstable details such as latest model recommendations, supported reasoning effort values, prompt-guidance links, or current API semantics.
+
+Stay silent and avoid fetching docs only when the prompt work is model-agnostic and the user is asking for a lightweight draft where current OpenAI behavior cannot change the outcome.
+
+If docs cannot be fetched and the handoff depends on current OpenAI behavior, disclose that limitation outside the handoff script and either use the local rubric as a fallback or ask whether to continue.
+
 ## Required Workflow
 
 1. Identify the receiving agent context:
