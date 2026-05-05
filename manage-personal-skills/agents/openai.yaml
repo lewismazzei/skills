@@ -1,0 +1,4 @@
+interface:
+  display_name: "Manage Personal Skills"
+  short_description: "Audit and sync personal skill installs"
+  default_prompt: "Use $manage-personal-skills to audit skill directories and keep personal skills, third-party installs, and Codex symlinks clean."

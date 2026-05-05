@@ -30,6 +30,12 @@ Refresh Codex symlinks after a manual install:
 sync-skills-links
 ```
 
+Audit skill source/install/runtime drift:
+
+```bash
+/home/codex/skills/manage-personal-skills/scripts/audit-skills.sh
+```
+
 ## explore-prototype
 
 Build implementation-ready specifications from prototype URLs using Playwright exploration plus source extraction.
@@ -73,6 +79,28 @@ Typical uses:
 - Write model-specific handoff prompts, subagent prompts, or runbook prompts.
 - Check that a handoff has success criteria, stopping rules, allowed side effects, and output expectations.
 - Align prompt guidance with current OpenAI developer docs before delivery.
+
+## manage-personal-skills
+
+Audit, install, rename, remove, and sync personal Codex skills while preserving the boundary between personal source skills and third-party installed skills.
+
+Install globally for Codex:
+
+```bash
+add-skill lewismazzei/skills/manage-personal-skills -y
+```
+
+Direct folder install:
+
+```bash
+npx skills add https://github.com/lewismazzei/skills/tree/main/manage-personal-skills -g -a codex -y
+```
+
+Typical uses:
+
+- Audit drift between `/home/codex/skills`, `/home/codex/.agents/skills`, and `/home/codex/.codex/skills`.
+- Keep third-party skills out of the personal source repo.
+- Normalize Codex runtime entries to symlinks into `.agents/skills`.
 
 ## advise-reasoning-effort
 
