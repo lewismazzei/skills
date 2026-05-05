@@ -92,7 +92,12 @@ function isExternal(targetUrl: string, baseOrigin: string, allowlist: string[]):
 }
 
 async function discoverActions(page: Page, baseOrigin: string): Promise<DiscoveredAction[]> {
+  await installEvaluateShim(page);
   const raw = await page.evaluate(() => {
+    function __name<T>(target: T): T {
+      return target;
+    }
+
     const cssPath = (el: Element): string => {
       if (el.id) {
         return `#${CSS.escape(el.id)}`;
@@ -151,8 +156,80 @@ async function discoverActions(page: Page, baseOrigin: string): Promise<Discover
       return rect.width > 0 && rect.height > 0;
     };
 
+    const isDisabled = (el: Element): boolean => {
+      return (
+        (el as HTMLButtonElement).disabled ||
+        el.getAttribute("aria-disabled") === "true" ||
+        el.getAttribute("disabled") !== null
+      );
+    };
+
+    const isSelectedCalendarDay = (el: Element): boolean => {
+      return (
+        el.getAttribute("aria-selected") === "true" ||
+        el.classList.contains("rdp-day_selected") ||
+        el.classList.contains("rdp-day_range_start") ||
+        el.classList.contains("rdp-day_range_middle") ||
+        el.classList.contains("rdp-day_range_end")
+      );
+    };
+
+    const isCalendarDay = (el: Element): boolean => {
+      return (
+        el.tagName.toLowerCase() === "button" &&
+        ((el as HTMLButtonElement).name === "day" ||
+          el.classList.contains("rdp-day") ||
+          el.getAttribute("role") === "gridcell")
+      );
+    };
+
+    const shouldKeepCalendarAction = (el: Element): boolean => {
+      const aria = el.getAttribute("aria-label") || "";
+      if (
+        el.tagName.toLowerCase() === "button" &&
+        /go to (previous|next) month/i.test(aria)
+      ) {
+        return false;
+      }
+
+      if (!isCalendarDay(el)) {
+        return true;
+      }
+      if (isDisabled(el)) {
+        return false;
+      }
+
+      const root = el.closest(".rdp") || document;
+      const enabledDays = Array.from(
+        root.querySelectorAll("button[name='day'], button.rdp-day, [role='gridcell'].rdp-day")
+      ).filter((day) => visible(day) && !isDisabled(day));
+      const dayIndex = enabledDays.indexOf(el);
+      if (dayIndex < 0) {
+        return false;
+      }
+
+      const selectedIndexes = enabledDays
+        .map((day, index) => (isSelectedCalendarDay(day) ? index : -1))
+        .filter((index) => index >= 0);
+
+      if (selectedIndexes.length === 0) {
+        const last = enabledDays.length - 1;
+        const representativeIndexes = new Set([0, Math.min(7, last), Math.min(14, last)]);
+        return representativeIndexes.has(dayIndex);
+      }
+
+      const firstSelectedIndex = Math.min(...selectedIndexes);
+      const representativeIndexes = new Set(
+        [firstSelectedIndex + 3, firstSelectedIndex + 7].filter(
+          (index) => index >= 0 && index < enabledDays.length
+        )
+      );
+      return representativeIndexes.has(dayIndex);
+    };
+
     const result = nodes
       .filter((el) => visible(el))
+      .filter((el) => shouldKeepCalendarAction(el))
       .slice(0, 300)
       .map((el) => {
         const tag = el.tagName.toLowerCase();
@@ -232,6 +309,10 @@ async function discoverActions(page: Page, baseOrigin: string): Promise<Discover
     }
   }
   return [...seen.values()];
+}
+
+async function installEvaluateShim(page: Page): Promise<void> {
+  await page.evaluate("globalThis.__name = globalThis.__name || ((target) => target);");
 }
 
 async function waitForSettled(page: Page): Promise<void> {
@@ -354,7 +435,12 @@ async function captureState(params: {
   const title = await page.title();
   const url = page.url();
 
+  await installEvaluateShim(page);
   const domSnapshot = await page.evaluate(() => {
+    function __name<T>(target: T): T {
+      return target;
+    }
+
     const text = (document.body?.innerText || "").replace(/\s+/g, " ").trim().slice(0, 4000);
     const tags = [...document.querySelectorAll("*")]
       .slice(0, 400)
