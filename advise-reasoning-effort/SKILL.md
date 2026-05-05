@@ -1,11 +1,19 @@
 ---
 name: advise-reasoning-effort
-description: Suggests the appropriate Codex reasoning effort before substantial work starts. Use proactively for GPT-5.5/Codex tasks where low, medium, high, or xhigh choice materially affects autonomy, quality, latency, or cost; stay silent for trivial tasks or when the default is clearly fine.
+description: Suggests the appropriate Codex reasoning effort before substantial work starts, using current OpenAI docs when model behavior, reasoning controls, or effort semantics matter. Use proactively for GPT-5.5/Codex tasks where low, medium, high, or xhigh choice materially affects autonomy, quality, latency, or cost; stay silent for trivial tasks or when the default is clearly fine.
 ---
 
 # Reasoning Effort Advisor
 
 Recommend the Codex reasoning effort for the task at hand before substantive work begins. This skill is advisory only: do not stop the thread, do not ask the user to switch settings by default, and do not reduce autonomy.
+
+## OpenAI Docs Grounding
+
+Use the `openai-docs` skill and official OpenAI documentation when advice depends on current model behavior, model availability, reasoning controls, or prompt guidance. Do not rely on memory for unstable details such as the latest recommended model, supported reasoning effort values, or semantics of effort controls.
+
+Stay silent and avoid fetching docs when the recommendation is obvious from the local task shape alone, such as a small mechanical edit that clearly fits `low` or ordinary multi-step work that clearly fits the user's baseline.
+
+If docs cannot be fetched and the recommendation depends on current OpenAI behavior, disclose that the advice is based on the local rubric rather than verified current docs.
 
 ## Baseline
 
