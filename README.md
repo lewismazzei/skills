@@ -51,3 +51,47 @@ Typical uses:
 - Analyze a prototype URL into `spec.md`, `analysis.json`, and screenshots.
 - Capture hidden modals, data models, formulas, and AI response maps.
 - Run discovery-only mode before deep analysis.
+
+## guide-handoff-prompt
+
+Create, revise, or review handoff scripts and prompts for another AI agent or OpenAI model using current OpenAI prompt guidance.
+
+Install globally for Codex:
+
+```bash
+add-skill lewismazzei/skills/guide-handoff-prompt -y
+```
+
+Direct folder install:
+
+```bash
+npx skills add https://github.com/lewismazzei/skills/tree/main/guide-handoff-prompt -g -a codex -y
+```
+
+Typical uses:
+
+- Write model-specific handoff prompts, subagent prompts, or runbook prompts.
+- Check that a handoff has success criteria, stopping rules, allowed side effects, and output expectations.
+- Align prompt guidance with current OpenAI developer docs before delivery.
+
+## advise-reasoning-effort
+
+Suggest the appropriate Codex reasoning effort before substantial work starts.
+
+Install globally for Codex:
+
+```bash
+add-skill lewismazzei/skills/advise-reasoning-effort -y
+```
+
+Direct folder install:
+
+```bash
+npx skills add https://github.com/lewismazzei/skills/tree/main/advise-reasoning-effort -g -a codex -y
+```
+
+Typical uses:
+
+- Recommend `low`, `medium`, `high`, or `xhigh` reasoning effort based on task complexity.
+- Stay silent when the default effort is appropriate.
+- Give one short proactive note before high-risk or long-running work.

@@ -1,0 +1,12 @@
+interface:
+  display_name: "Handoff Prompt Guidance"
+  short_description: "Model-specific handoff prompt checks"
+  default_prompt: "Use $guide-handoff-prompt to write a handoff script for the target agent and align it with current OpenAI prompt guidance."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "openaiDeveloperDocs"
+      description: "OpenAI developer docs for current model and prompt guidance"
+      transport: "streamable_http"
+      url: "https://developers.openai.com/mcp"
