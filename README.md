@@ -36,6 +36,42 @@ Audit skill source/install/runtime drift:
 /home/codex/skills/manage-personal-skills/scripts/audit-skills.sh
 ```
 
+## Golden flow
+
+Use the `manage-personal-skills` skill before changing skill installs, source
+skills, or Codex runtime links.
+
+Before changes:
+
+```bash
+/home/codex/skills/manage-personal-skills/scripts/audit-skills.sh
+```
+
+For personal skills:
+
+- Edit only this repo first.
+- Keep the skill directory name and `SKILL.md` frontmatter `name` in sync.
+- Update this `README.md` in the same change.
+- Commit and push the source repo before treating it as the new source of truth.
+- Install or refresh the active global copy from the pushed repo.
+- Ensure `~/.codex/skills/<skill-name>` is a symlink to `../../.agents/skills/<skill-name>`.
+
+For third-party skills:
+
+- Install into the global runtime, not this repo.
+- Keep third-party skill files out of `/home/codex/skills`.
+- Ensure the `.codex` entry is a symlink into `.agents`.
+
+After changes:
+
+```bash
+/home/codex/skills/manage-personal-skills/scripts/audit-skills.sh
+```
+
+Resolve all `ERROR` lines before committing. Prefer separate commits for
+separate intents: obsolete removals, personal skill additions or renames,
+executable sync fixes, and third-party install normalization.
+
 ## explore-prototype
 
 Build implementation-ready specifications from prototype URLs using Playwright exploration plus source extraction.
