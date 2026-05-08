@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -u
 
-repo="${SKILLS_REPO:-/home/codex/skills}"
-agents="${AGENTS_SKILLS_DIR:-/home/codex/.agents/skills}"
-codex="${CODEX_SKILLS_DIR:-/home/codex/.codex/skills}"
+repo="${SKILLS_REPO:-$HOME/skills}"
+agents="${AGENTS_SKILLS_DIR:-$HOME/.agents/skills}"
+codex="${CODEX_SKILLS_DIR:-$HOME/.codex/skills}"
 
 errors=0
 warnings=0

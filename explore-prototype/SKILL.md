@@ -49,7 +49,7 @@ Before execution, confirm:
 Run bundled analyzer commands from this skill directory, not from the user's project directory. If the skill is installed globally, the active path is usually:
 
 ```bash
-cd /home/codex/.codex/skills/explore-prototype
+cd ~/.codex/skills/explore-prototype
 ```
 
 Default command pattern:

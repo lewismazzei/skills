@@ -33,7 +33,7 @@ sync-skills-links
 Audit skill source/install/runtime drift:
 
 ```bash
-/home/codex/skills/manage-personal-skills/scripts/audit-skills.sh
+~/skills/manage-personal-skills/scripts/audit-skills.sh
 ```
 
 ## Golden flow
@@ -44,7 +44,7 @@ skills, or Codex runtime links.
 Before changes:
 
 ```bash
-/home/codex/skills/manage-personal-skills/scripts/audit-skills.sh
+~/skills/manage-personal-skills/scripts/audit-skills.sh
 ```
 
 For personal skills:
@@ -59,13 +59,13 @@ For personal skills:
 For third-party skills:
 
 - Install into the global runtime, not this repo.
-- Keep third-party skill files out of `/home/codex/skills`.
+- Keep third-party skill files out of `~/skills`.
 - Ensure the `.codex` entry is a symlink into `.agents`.
 
 After changes:
 
 ```bash
-/home/codex/skills/manage-personal-skills/scripts/audit-skills.sh
+~/skills/manage-personal-skills/scripts/audit-skills.sh
 ```
 
 Resolve all `ERROR` lines before committing. Prefer separate commits for
@@ -134,7 +134,7 @@ npx skills add https://github.com/lewismazzei/skills/tree/main/manage-personal-s
 
 Typical uses:
 
-- Audit drift between `/home/codex/skills`, `/home/codex/.agents/skills`, and `/home/codex/.codex/skills`.
+- Audit drift between `~/skills`, `~/.agents/skills`, and `~/.codex/skills`.
 - Keep third-party skills out of the personal source repo.
 - Normalize Codex runtime entries to symlinks into `.agents/skills`.
 
