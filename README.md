@@ -116,6 +116,58 @@ Typical uses:
 - Check that a handoff has success criteria, stopping rules, allowed side effects, and output expectations.
 - Align prompt guidance with current OpenAI developer docs before delivery.
 
+## handoff-session
+
+Create or update a living handoff for a multi-thread work session.
+
+Install globally for Codex:
+
+```bash
+add-skill lewismazzei/skills/handoff-session -y
+```
+
+Direct folder install:
+
+```bash
+npx skills add https://github.com/lewismazzei/skills/tree/main/handoff-session -g -a codex -y
+```
+
+Typical uses:
+
+- Preserve the current state frontier before ending or crossing a thread boundary.
+- Create the next handoff as a living document for coding, debugging, research, review, planning, documentation, issue triage, or skill work.
+- Maintain `.codex/handoffs/current.handoff.md` as a symlink to the latest generated handoff.
+- Let the next thread confirm the `current.handoff.md` target before reading one handoff and continuing the session.
+- Avoid relying on handoffs as transcript summaries or duplicate requirements docs.
+- Report verification only when checks failed, could not be run, or have important caveats.
+- Use the bundled `templates/session-handoff-template.md` instead of storing reusable templates in project handoff directories.
+
+## handoff-grilling-session
+
+Create or update a living handoff for a multi-thread `grill-me` or `grill-with-docs` session.
+
+Install globally for Codex:
+
+```bash
+add-skill lewismazzei/skills/handoff-grilling-session -y
+```
+
+Direct folder install:
+
+```bash
+npx skills add https://github.com/lewismazzei/skills/tree/main/handoff-grilling-session -g -a codex -y
+```
+
+Typical uses:
+
+- Preserve the current decision frontier before ending a grilling thread.
+- Create the next handoff as a living document when crossing thread boundaries.
+- Maintain `.codex/handoffs/current.handoff.md` as a symlink to the latest generated handoff.
+- Let the next thread confirm the `current.handoff.md` target before reading one handoff and continuing with the next grilling question.
+- Avoid relying on handoffs as transcript summaries or duplicate requirements docs.
+- Report verification only when checks failed, could not be run, or have important caveats.
+- Use the bundled `templates/grill-handoff-template.md` instead of storing reusable templates in project handoff directories.
+
 ## manage-personal-skills
 
 Audit, install, rename, remove, and sync personal Codex skills while preserving the boundary between personal source skills and third-party installed skills.
