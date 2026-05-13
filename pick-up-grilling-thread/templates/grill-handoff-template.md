@@ -27,7 +27,7 @@ Do not hand off the transcript. Hand off the current state frontier.
 `.codex/handoffs/current.handoff.md` should be a symlink to the latest generated handoff for this grilling stream.
 
 - When this handoff is created or updated, update `current.handoff.md` to point to it.
-- In a new thread, `/handoff-grilling-session` should default to checking `current.handoff.md`.
+- In a new thread, `/pick-up-grilling-thread` should default to checking `current.handoff.md`.
 - Before reading handoff contents, inspect only the symlink target and ask the user to confirm it is the intended handoff.
 - If `current.handoff.md` is missing, not a symlink, or broken, stop and tell the user. Do not guess the latest handoff by filename.
 - `.codex/handoffs/` should contain generated handoffs and the current pointer only; reusable templates live inside the skill.
@@ -204,7 +204,7 @@ Do not revert or clean unrelated changes unless the user explicitly asks.
 
 - `grill-me` for plan/design stress-testing without doc updates.
 - `grill-with-docs` for domain/design stress-testing that should update durable docs as decisions crystallize.
-- `handoff-grilling-session` before ending a multi-thread grilling session.
+- `pick-up-grilling-thread` when starting a new thread from the current grilling handoff.
 - `[other skill/tool]` for [when to use it].
 
 ## Work Log

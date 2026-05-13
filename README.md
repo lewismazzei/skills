@@ -142,28 +142,28 @@ Typical uses:
 - Report verification only when checks failed, could not be run, or have important caveats.
 - Use the bundled `templates/session-handoff-template.md` instead of storing reusable templates in project handoff directories.
 
-## handoff-grilling-session
+## pick-up-grilling-thread
 
-Create or update a living handoff for a multi-thread `grill-me` or `grill-with-docs` session.
+Pick up a multi-thread `grill-me` or `grill-with-docs` session in a new thread from the current grilling handoff.
 
 Install globally for Codex:
 
 ```bash
-add-skill lewismazzei/skills/handoff-grilling-session -y
+add-skill lewismazzei/skills/pick-up-grilling-thread -y
 ```
 
 Direct folder install:
 
 ```bash
-npx skills add https://github.com/lewismazzei/skills/tree/main/handoff-grilling-session -g -a codex -y
+npx skills add https://github.com/lewismazzei/skills/tree/main/pick-up-grilling-thread -g -a codex -y
 ```
 
 Typical uses:
 
-- Preserve the current decision frontier before ending a grilling thread.
-- Create the next handoff as a living document when crossing thread boundaries.
-- Maintain `.codex/handoffs/current.handoff.md` as a symlink to the latest generated handoff.
-- Let the next thread confirm the `current.handoff.md` target before reading one handoff and continuing with the next grilling question.
+- Resume a grilling stream in a new thread from `.codex/handoffs/current.handoff.md`.
+- Confirm the `current.handoff.md` target before reading one handoff.
+- Identify the current decision frontier and continue with the next grilling question.
+- Create the next living handoff for the current thread and update `current.handoff.md`.
 - Avoid relying on handoffs as transcript summaries or duplicate requirements docs.
 - Report verification only when checks failed, could not be run, or have important caveats.
 - Use the bundled `templates/grill-handoff-template.md` instead of storing reusable templates in project handoff directories.
