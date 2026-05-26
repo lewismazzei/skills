@@ -142,6 +142,29 @@ Typical uses:
 - Report verification only when checks failed, could not be run, or have important caveats.
 - Use the bundled `templates/session-handoff-template.md` instead of storing reusable templates in project handoff directories.
 
+## isolate
+
+Create and work inside isolated Git worktrees for delegated or multi-thread worker tasks.
+
+Install globally for Codex:
+
+```bash
+add-skill lewismazzei/skills/isolate -y
+```
+
+Direct folder install:
+
+```bash
+npx skills add https://github.com/lewismazzei/skills/tree/main/isolate -g -a codex -y
+```
+
+Typical uses:
+
+- Start a worker thread with `/isolate` so all implementation happens inside a unique worktree.
+- Keep the parent thread available for planning, guidance, review, and integration while worker threads continue separately.
+- Use deterministic startup, status, inbox-note, and teardown scripts for worktree lifecycle.
+- Refuse cleanup when worker output is dirty or unreviewed.
+
 ## pick-up-grilling-thread
 
 Pick up a multi-thread `grill-me` or `grill-with-docs` session in a new thread from the current grilling handoff.
