@@ -178,6 +178,11 @@ if [[ -n "$request_dir" && -f "$request_dir/brief.md" ]]; then
   cp "$request_dir/brief.md" "$worktree/.codex/isolate/request.md"
 fi
 
+if [[ -n "$request_dir" ]]; then
+  printf '%s\n' "$worktree" > "$request_dir/worktree"
+  printf '%s\n' "$created_at" > "$request_dir/started_at"
+fi
+
 {
   printf '# Isolate Inbox\n\n'
   printf 'Created: %s\n\n' "$created_at"

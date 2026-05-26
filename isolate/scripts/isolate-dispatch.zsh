@@ -10,11 +10,11 @@ Options:
   --repo PATH       Source Git repo. Defaults to nearest repo from cwd.
   --task TEXT       Work description for the worker.
   --base REF        Base ref for the worker branch. Defaults to HEAD.
-  --branch NAME     Worker branch. Defaults to worker/<task-slug>.
+  --branch NAME     Worker branch. Defaults to worker/<work-id>.
   --owner TEXT      File/directory ownership scope.
   --avoid TEXT      Files/directories the worker must not touch.
   --acceptance TEXT Checks or behavior required before completion.
-  --work-id ID      Explicit work ID. Defaults to timestamp plus slug.
+  --work-id ID      Explicit work ID. Defaults to a short pet-name ID.
   -h, --help        Show this help.
 USAGE
 }
@@ -38,6 +38,47 @@ write_field() {
   local path="$1"
   local value="$2"
   printf '%s\n' "$value" > "$path"
+}
+
+pet_id() {
+  local seed_input="$1"
+  local seed
+  local adjective_index
+  local noun_index
+  local adjectives=(
+    amber brisk calm clear clever copper crisp dapper deft eager
+    gentle golden happy honest lucid lucky mellow nimble quiet rapid
+    steady tidy vivid warm wise
+  )
+  local nouns=(
+    anchor atlas beacon bridge canyon cedar comet compass copper
+    harbor lantern maple meadow mint orbit pebble pixel quartz
+    ribbon summit valley velvet vista willow
+  )
+
+  seed=$(printf '%s' "$seed_input" | cksum | awk '{print $1}')
+  adjective_index=$((seed % ${#adjectives[@]} + 1))
+  noun_index=$(((seed / ${#adjectives[@]}) % ${#nouns[@]} + 1))
+  printf '%s-%s' "$adjectives[$adjective_index]" "$nouns[$noun_index]"
+}
+
+default_worktree_for_id() {
+  local candidate="$1"
+  local candidate_branch="worker/$candidate"
+  local branch_slug
+  branch_slug=$(slugify "$candidate_branch")
+  printf '%s/%s-%s' "$(dirname "$repo")" "$(basename "$repo")" "$branch_slug"
+}
+
+work_id_taken() {
+  local candidate="$1"
+  local candidate_branch="worker/$candidate"
+
+  [[ -e "$request_root/$candidate" ]] && return 0
+  [[ -e "$completed_root/$candidate" ]] && return 0
+  git -C "$repo" show-ref --verify --quiet "refs/heads/$candidate_branch" && return 0
+  [[ -e "$(default_worktree_for_id "$candidate")" ]] && return 0
+  return 1
 }
 
 repo=""
@@ -130,14 +171,15 @@ if ! git -C "$repo" rev-parse --verify --quiet "$base^{commit}" >/dev/null; then
   fail "base ref does not resolve to a commit: $base"
 fi
 
-task_slug=$(slugify "$task")
 request_root="${CODEX_ISOLATE_REQUESTS_DIR:-$HOME/.codex/isolate/requests}"
+completed_root="${CODEX_ISOLATE_COMPLETED_DIR:-$HOME/.codex/isolate/completed}"
 
 if [[ -z "$work_id" ]]; then
-  base_work_id="$(date -u +%Y%m%d%H%M%S)-$task_slug"
+  entropy="$(date -u +%Y%m%d%H%M%S)-$task-$repo"
+  base_work_id=$(pet_id "$entropy")
   work_id="$base_work_id"
   suffix=2
-  while [[ -e "$request_root/$work_id" ]]; do
+  while work_id_taken "$work_id"; do
     work_id="$base_work_id-$suffix"
     suffix=$((suffix + 1))
   done

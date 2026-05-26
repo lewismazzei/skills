@@ -1,6 +1,6 @@
 ---
 name: isolate
-description: Create and work inside isolated Git worktrees for delegated or multi-thread worker tasks. Use when the user invokes /isolate, /isolate <work>, or /isolate <work_id>; asks to start an isolated worker thread; delegates work to another Codex thread; or wants deterministic startup/status/teardown around worktrees.
+description: Create, run, and finish isolated Git worktree requests for delegated or multi-thread worker tasks. Use when the user invokes /isolate, /isolate <work>, /isolate <work_id>, or /isolate finish <work_id>; delegates work to another Codex thread; or wants deterministic worktree startup/status/finish/teardown.
 ---
 
 # Isolate
@@ -18,6 +18,7 @@ When the user invokes `/isolate` with a work description in the main thread, cre
 ```
 
 If the repo is not explicit, infer the nearest Git repo from the current directory. If ownership is unclear, keep it narrow from context or mark it `unspecified` so the worker asks before broad edits.
+Generated work IDs are short pet-name IDs such as `amber-lantern`; the script appends a numeric suffix if needed.
 
 ### Worker: `/isolate <work_id>`
 
@@ -28,6 +29,16 @@ When the user invokes `/isolate` with a generated work ID, start the saved reque
 ```
 
 Then `cd` into the printed worktree path, read `.codex/isolate/request.md`, read repo instructions, and continue from there. If the user pastes a full brief with repo/task/base/ownership fields, use `isolate-start.zsh --repo ... --task ...` directly.
+
+### Finish: `/isolate finish <work_id>`
+
+When the dispatcher invokes finish, trust the worker output and run:
+
+```zsh
+~/skills/isolate/scripts/isolate-finish.zsh --work-id <work_id>
+```
+
+Finish stages and commits worker changes, merges the worker branch into the source checkout's current branch, removes the clean worktree, prunes worktree metadata, deletes the merged worker branch, and marks the request completed. It refuses dirty source checkouts, missing workers, commit failures, and merge conflicts.
 
 ## Worker Contract
 
