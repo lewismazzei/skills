@@ -220,14 +220,14 @@ write_field "$request_dir/requester_cwd" "$requester_cwd"
   printf -- '- do_not_touch: %s\n' "${avoid:-unspecified}"
   printf -- '- acceptance: %s\n\n' "${acceptance:-unspecified}"
   printf '## Worker Prompt\n\n'
-  printf '```text\n/isolate %s\n```\n\n' "$work_id"
+  printf '```text\n/isolate start %s\n```\n\n' "$work_id"
   printf '## Source Checkout Status At Dispatch\n\n'
   printf '```text\n%s\n```\n' "$source_status"
 } > "$request_dir/brief.md"
 
 printf 'work_id=%s\n' "$work_id"
 printf 'request_dir=%s\n' "$request_dir"
-printf 'worker_prompt=/isolate %s\n' "$work_id"
+printf 'worker_prompt=/isolate start %s\n' "$work_id"
 printf 'repo=%s\n' "$repo"
 printf 'branch=%s\n' "$branch"
 printf 'brief=%s\n' "$request_dir/brief.md"

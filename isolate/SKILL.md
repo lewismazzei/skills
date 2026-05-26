@@ -1,6 +1,6 @@
 ---
 name: isolate
-description: Create, run, and finish isolated Git worktree requests for delegated or multi-thread worker tasks. Use when the user invokes /isolate, /isolate <work>, /isolate <work_id>, or /isolate finish <work_id>; delegates work to another Codex thread; or wants deterministic worktree startup/status/finish/teardown.
+description: Create, run, and finish isolated Git worktree requests for delegated or multi-thread worker tasks. Use when the user invokes /isolate <work>, /isolate start <work_id>, or /isolate finish <work_id>; delegates work to another Codex thread; or wants deterministic worktree startup/status/finish/teardown.
 ---
 
 # Isolate
@@ -19,10 +19,11 @@ When the user invokes `/isolate` with a work description in the main thread, cre
 
 If the repo is not explicit, infer the nearest Git repo from the current directory. If ownership is unclear, keep it narrow from context or mark it `unspecified` so the worker asks before broad edits.
 Generated work IDs are short pet-name IDs such as `amber-lantern`; the script appends a numeric suffix if needed.
+If the argument is a single token and `~/.codex/isolate/requests/<token>` exists, treat it as `start <token>` instead of dispatching new work.
 
-### Worker: `/isolate <work_id>`
+### Worker: `/isolate start <work_id>`
 
-When the user invokes `/isolate` with a generated work ID, start the saved request:
+When the user invokes `/isolate start` with a generated work ID, start the saved request:
 
 ```zsh
 ~/skills/isolate/scripts/isolate-start.zsh --work-id <work_id>
@@ -56,8 +57,6 @@ When invoked in a worker thread:
 If the current thread is the dispatcher, do not implement the delegated work after creating the request.
 
 ## Startup
-
-Use one of these startup forms:
 
 ```zsh
 ~/skills/isolate/scripts/isolate-start.zsh --work-id <work_id>
