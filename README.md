@@ -160,7 +160,8 @@ npx skills add https://github.com/lewismazzei/skills/tree/main/isolate -g -a cod
 
 Typical uses:
 
-- Start a worker thread with `/isolate` so all implementation happens inside a unique worktree.
+- Use `/isolate <work>` in a dispatcher thread to create a durable work request and print `/isolate <work_id>` for a new worker thread.
+- Use `/isolate <work_id>` in a worker thread so all implementation happens inside a unique worktree.
 - Keep the parent thread available for planning, guidance, review, and integration while worker threads continue separately.
 - Use deterministic startup, status, inbox-note, and teardown scripts for worktree lifecycle.
 - Refuse cleanup when worker output is dirty or unreviewed.

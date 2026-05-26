@@ -1,17 +1,39 @@
 ---
 name: isolate
-description: Create and work inside an isolated Git worktree for delegated or multi-thread worker tasks. Use when the user invokes /isolate, asks to start an isolated worker thread, delegates work to another Codex thread, or wants deterministic startup/status/teardown around worktrees.
+description: Create and work inside isolated Git worktrees for delegated or multi-thread worker tasks. Use when the user invokes /isolate, /isolate <work>, or /isolate <work_id>; asks to start an isolated worker thread; delegates work to another Codex thread; or wants deterministic startup/status/teardown around worktrees.
 ---
 
 # Isolate
 
-Use this skill in a worker thread that must do all repository work inside a dedicated Git worktree. The parent thread stays responsible for planning, dispatch, review, and integration.
+Use this skill to dispatch isolated worker requests and to run worker threads inside dedicated Git worktrees. The parent thread stays responsible for planning, dispatch, review, and integration.
+
+## Argument Modes
+
+### Dispatcher: `/isolate <work>`
+
+When the user invokes `/isolate` with a work description in the main thread, create a durable work request and print the one-line prompt for a new worker thread:
+
+```zsh
+~/skills/isolate/scripts/isolate-dispatch.zsh --repo /path/to/repo --task "work description" --base HEAD --owner "files or dirs this worker may edit"
+```
+
+If the repo is not explicit, infer the nearest Git repo from the current directory. If ownership is unclear, keep it narrow from context or mark it `unspecified` so the worker asks before broad edits.
+
+### Worker: `/isolate <work_id>`
+
+When the user invokes `/isolate` with a generated work ID, start the saved request:
+
+```zsh
+~/skills/isolate/scripts/isolate-start.zsh --work-id <work_id>
+```
+
+Then `cd` into the printed worktree path, read `.codex/isolate/request.md`, read repo instructions, and continue from there. If the user pastes a full brief with repo/task/base/ownership fields, use `isolate-start.zsh --repo ... --task ...` directly.
 
 ## Worker Contract
 
 When invoked in a worker thread:
 
-1. Read the user's worker brief and repo `AGENTS.md`.
+1. Read the saved request or pasted worker brief and repo `AGENTS.md`.
 2. Start or enter the assigned worktree before editing files.
 3. Run all commands and file edits from the isolated worktree path.
 4. Do not edit the source checkout after isolation starts.
@@ -20,13 +42,14 @@ When invoked in a worker thread:
 7. Report changed paths, tests/checks run, remaining risks, branch, and worktree path.
 8. Do not remove the worktree while it has uncommitted changes.
 
-If the current thread is the dispatcher, do not implement the delegated work. Produce a worker brief that can be pasted into a new thread with `/isolate`.
+If the current thread is the dispatcher, do not implement the delegated work after creating the request.
 
 ## Startup
 
-Use the bundled script to create a unique worktree and branch:
+Use one of these startup forms:
 
 ```zsh
+~/skills/isolate/scripts/isolate-start.zsh --work-id <work_id>
 ~/skills/isolate/scripts/isolate-start.zsh --repo /path/to/repo --task "short task name" --base HEAD --owner "files or dirs this worker may edit"
 ```
 
@@ -63,17 +86,3 @@ Only remove clean worktrees:
 ```
 
 The teardown script refuses primary checkouts, dirty worktrees, and non-worktree paths. It removes the worktree and prunes Git worktree metadata. It does not delete branches; branch deletion requires a separate explicit decision.
-
-## Worker Brief Template
-
-```text
-/isolate
-Repo: /absolute/path/to/repo
-Base: HEAD or branch/ref
-Task: one concrete outcome
-Branch: worker/<slug> (optional)
-Ownership: exact files/directories this worker may edit
-Do not touch: files/directories to avoid
-Acceptance: checks or observable behavior required
-Return: worktree path, branch, changed paths, tests/checks, risks
-```

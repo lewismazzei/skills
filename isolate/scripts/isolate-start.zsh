@@ -5,8 +5,10 @@ usage() {
   cat <<'USAGE'
 Usage:
   isolate-start.zsh --repo PATH (--task TEXT | --branch NAME) [options]
+  isolate-start.zsh --work-id ID [options]
 
 Options:
+  --work-id ID     Load a request from ~/.codex/isolate/requests/ID.
   --repo PATH       Source Git repo to isolate from.
   --task TEXT       Short task name. Used to derive branch/worktree names.
   --branch NAME     Branch to create for the worker.
@@ -38,9 +40,25 @@ branch=""
 base="HEAD"
 worktree=""
 owner=""
+avoid=""
+acceptance=""
+work_id=""
+request_dir=""
+
+read_request_field() {
+  local name="$1"
+  local file="$request_dir/$name"
+  if [[ -f "$file" ]]; then
+    cat "$file"
+  fi
+}
 
 while (( $# )); do
   case "$1" in
+    --work-id)
+      work_id="${2:-}"
+      shift 2
+      ;;
     --repo)
       repo="${2:-}"
       shift 2
@@ -75,6 +93,23 @@ while (( $# )); do
       ;;
   esac
 done
+
+if [[ -n "$work_id" ]]; then
+  request_root="${CODEX_ISOLATE_REQUESTS_DIR:-$HOME/.codex/isolate/requests}"
+  request_dir="$request_root/$work_id"
+  [[ -d "$request_dir" ]] || fail "isolate request not found: $request_dir"
+
+  [[ -n "$repo" ]] || repo=$(read_request_field repo)
+  [[ -n "$task" ]] || task=$(read_request_field task)
+  [[ -n "$branch" ]] || branch=$(read_request_field branch)
+  if [[ "$base" == "HEAD" ]]; then
+    saved_base=$(read_request_field base)
+    [[ -n "$saved_base" ]] && base="$saved_base"
+  fi
+  [[ -n "$owner" ]] || owner=$(read_request_field owner)
+  avoid=$(read_request_field avoid)
+  acceptance=$(read_request_field acceptance)
+fi
 
 [[ -n "$repo" ]] || fail "--repo is required"
 [[ -d "$repo" ]] || fail "repo does not exist: $repo"
@@ -125,15 +160,23 @@ fi
 {
   printf '# Isolate Worker Metadata\n\n'
   printf -- '- created_at: %s\n' "$created_at"
+  printf -- '- work_id: %s\n' "${work_id:-none}"
+  printf -- '- request_dir: %s\n' "${request_dir:-none}"
   printf -- '- source_repo: %s\n' "$repo"
   printf -- '- worktree: %s\n' "$worktree"
   printf -- '- branch: %s\n' "$branch"
   printf -- '- base: %s\n' "$base"
   printf -- '- owner: %s\n' "${owner:-unspecified}"
+  printf -- '- do_not_touch: %s\n' "${avoid:-unspecified}"
+  printf -- '- acceptance: %s\n' "${acceptance:-unspecified}"
   printf -- '- task: %s\n\n' "${task:-unspecified}"
   printf '## Source Checkout Status At Startup\n\n'
   printf '```text\n%s\n```\n' "$source_status"
 } > "$worktree/.codex/isolate/README.md"
+
+if [[ -n "$request_dir" && -f "$request_dir/brief.md" ]]; then
+  cp "$request_dir/brief.md" "$worktree/.codex/isolate/request.md"
+fi
 
 {
   printf '# Isolate Inbox\n\n'
