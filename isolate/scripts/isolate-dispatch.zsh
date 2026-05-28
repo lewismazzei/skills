@@ -13,7 +13,7 @@ Options:
   --branch NAME     Worker branch. Defaults to worker/<work-id>.
   --owner TEXT      File/directory ownership scope.
   --avoid TEXT      Files/directories the worker must not touch.
-  --acceptance TEXT Checks or behavior required before completion.
+  --acceptance TEXT Expected verification for the main thread.
   --work-id ID      Explicit work ID. Defaults to a short pet-name ID.
   -h, --help        Show this help.
 USAGE
@@ -218,7 +218,7 @@ write_field "$request_dir/requester_cwd" "$requester_cwd"
   printf -- '- task: %s\n' "$task"
   printf -- '- ownership: %s\n' "${owner:-unspecified}"
   printf -- '- do_not_touch: %s\n' "${avoid:-unspecified}"
-  printf -- '- acceptance: %s\n\n' "${acceptance:-unspecified}"
+  printf -- '- main_thread_verification: %s\n\n' "${acceptance:-unspecified}"
   printf '## Worker Prompt\n\n'
   printf '```text\n/isolate start %s\n```\n\n' "$work_id"
   printf '## Source Checkout Status At Dispatch\n\n'

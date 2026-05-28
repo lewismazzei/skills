@@ -168,7 +168,7 @@ fi
   printf -- '- base: %s\n' "$base"
   printf -- '- owner: %s\n' "${owner:-unspecified}"
   printf -- '- do_not_touch: %s\n' "${avoid:-unspecified}"
-  printf -- '- acceptance: %s\n' "${acceptance:-unspecified}"
+  printf -- '- main_thread_verification: %s\n' "${acceptance:-unspecified}"
   printf -- '- task: %s\n\n' "${task:-unspecified}"
   printf '## Source Checkout Status At Startup\n\n'
   printf '```text\n%s\n```\n' "$source_status"

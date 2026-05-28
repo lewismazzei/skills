@@ -50,9 +50,10 @@ When invoked in a worker thread:
 3. Run all commands and file edits from the isolated worktree path.
 4. Do not edit the source checkout after isolation starts.
 5. Keep to the assigned ownership scope. Ask before touching files outside it.
-6. Check `.codex/isolate/inbox.md` at startup, before major edits, before tests, and before the final response.
-7. Report changed paths, tests/checks run, remaining risks, branch, and worktree path.
-8. Do not remove the worktree while it has uncommitted changes.
+6. Check `.codex/isolate/inbox.md` at startup, before major edits, and before the final response.
+7. Do not run tests, lint, typecheck, builds, browser checks, or verification commands unless explicitly asked. The main thread owns verification.
+8. Report changed paths, non-test commands run, remaining risks, branch, worktree path, and that verification was left to main.
+9. Do not remove the worktree while it has uncommitted changes.
 
 If the current thread is the dispatcher, do not implement the delegated work after creating the request.
 
