@@ -72,6 +72,31 @@ Resolve all `ERROR` lines before committing. Prefer separate commits for
 separate intents: obsolete removals, personal skill additions or renames,
 executable sync fixes, and third-party install normalization.
 
+## dispatch
+
+Dispatch coding or research work to pet-named background worker agents in
+dedicated Git worktrees while the parent thread remains the control plane.
+
+Install globally for Codex:
+
+```bash
+add-skill lewismazzei/skills/dispatch -y
+```
+
+Direct folder install:
+
+```bash
+npx skills add https://github.com/lewismazzei/skills/tree/main/dispatch -g -a codex -y
+```
+
+Typical uses:
+
+- Use `/dispatch <task>` to create a worker worktree, spawn a worker agent, and immediately return control to the parent thread.
+- Track workers by short pet names such as `bright-lantern`.
+- Queue parent-to-worker guidance through disk-backed inbox files.
+- Poll worker status with a cron-safe watcher that queues parent notifications.
+- Ask before destructive cleanup and refuse cleanup for dirty worktrees or unmerged branches.
+
 ## explore-prototype
 
 Build implementation-ready specifications from prototype URLs using Playwright exploration plus source extraction.
