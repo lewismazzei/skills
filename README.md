@@ -261,3 +261,26 @@ Typical uses:
 - Recommend `low`, `medium`, `high`, or `xhigh` reasoning effort based on task complexity.
 - Stay silent when the default effort is appropriate.
 - Give one short proactive note before high-risk or long-running work.
+
+## improve-feature
+
+Improve a feature across iterations after the first implementation exists.
+
+Install globally for Codex:
+
+```bash
+add-skill lewismazzei/skills/improve-feature -y
+```
+
+Direct folder install:
+
+```bash
+npx skills add https://github.com/lewismazzei/skills/tree/main/improve-feature -g -a codex -y
+```
+
+Typical uses:
+
+- Define the bar for a UI, component, API, or flow before changing it.
+- Capture before/after evidence with the same settings.
+- Fix only the highest-impact problem in each pass.
+- Keep changes only when the measured bar improves and guardrails stay green.
