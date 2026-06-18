@@ -95,6 +95,8 @@ Typical uses:
 - Track workers by short pet names such as `bright-lantern`.
 - Queue parent-to-worker guidance through disk-backed inbox files.
 - Poll worker status with a cron-safe watcher that queues parent notifications.
+- Require ready workers to report proof for the original user-visible symptom,
+  including production/default configuration paths for optional integrations.
 - Ask before destructive cleanup and refuse cleanup for dirty worktrees or unmerged branches.
 
 ## explore-prototype

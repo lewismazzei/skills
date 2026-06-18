@@ -19,10 +19,21 @@ Rules:
   yourself blocked and explain why.
 - Check `.codex/dispatch/inbox.ndjson` at startup, before major edits, and
   before your final response.
+- Before marking ready, verify the user-observed symptom named in the request:
+  exact error text, surface, role, URL, viewport, action, and environment where
+  applicable. Prefer an automated regression test that would have failed before
+  the fix. If that is not practical, run the closest browser/API/manual
+  reproduction and state the remaining gap.
+- For optional integrations or env-gated behavior, verify the production/default
+  configuration path as well as the configured-success path. Missing optional
+  provider config must not surface raw provider errors to users.
+- Do not present broad checks such as build, lint, or unrelated unit tests as
+  proof unless one check directly exercises the reported failure path.
 - Do not clean up the worktree.
 - Do not commit unless the parent explicitly asks.
 - Before finishing, write `.codex/dispatch/result.md` with changed paths,
-  commands/checks run, risks, conflicts, and remaining work.
+  commands/checks run, the symptom-proof performed, production/default config
+  coverage, risks, conflicts, and remaining work.
 - Mark yourself ready with:
 
 ```zsh
