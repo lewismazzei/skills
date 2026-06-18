@@ -53,8 +53,28 @@ assigned Git worktrees.
 ## Worker Contract
 
 Workers must work only inside their assigned worktree, respect the ownership
-scope, check `.codex/dispatch/inbox.ndjson` at checkpoints, and write
-`.codex/dispatch/result.md` before marking themselves ready:
+scope, and check `.codex/dispatch/inbox.ndjson` at checkpoints. Each worker
+must satisfy a SwarmForge-inspired verification constitution before marking
+ready:
+
+- Specification: restate the observable contract and, for behavior changes,
+  record Given/When/Then acceptance criteria before editing.
+- Red evidence: identify the check or reproduction that would have failed before
+  the change.
+- Implementation: use the smallest scoped change and TDD where the repo makes
+  that practical.
+- Cleanup and architecture: review touched code for duplication, complexity,
+  boundaries, and env/provider fallbacks.
+- Hardening gates: run the narrow symptom proof plus relevant lint, typecheck,
+  build, E2E, mutation, or complexity gates when available and proportional.
+- QA handoff: write `.codex/dispatch/result.md` with an acceptance contract,
+  proof matrix, production/default config coverage, quality gates, changed
+  paths, risks/conflicts, and remaining work.
+
+Workers may not present broad green checks as completion proof unless the
+evidence directly exercises the requested behavior. If the constitution cannot
+be satisfied, the worker marks itself blocked or reports the unsatisfied article
+instead of marking ready.
 
 ```zsh
 ~/skills/dispatch/scripts/dispatch-state.zsh --worker <pet-name> --status ready --message "summary"
