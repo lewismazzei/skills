@@ -9,6 +9,15 @@ dispatch_root() {
   printf '%s\n' "${CODEX_DISPATCH_HOME:-$HOME/.codex/dispatch}"
 }
 
+dispatch_default_worktree() {
+  local repo="$1"
+  local name="$2"
+  local repo_parent="${repo:h}"
+  local repo_name="${repo:t}"
+  local worktree_root="${CODEX_DISPATCH_WORKTREE_ROOT:-$repo_parent/.worktrees}"
+  printf '%s/%s/%s\n' "$worktree_root" "$repo_name" "$name"
+}
+
 dispatch_now() {
   date -u +"%Y-%m-%dT%H:%M:%SZ"
 }

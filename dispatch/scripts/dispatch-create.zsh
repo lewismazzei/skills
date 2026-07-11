@@ -16,7 +16,7 @@ Options:
   --avoid TEXT      Files/directories this worker must not touch.
   --base REF        Base commit/ref for the worker branch. Defaults to HEAD.
   --name NAME       Explicit pet name. Defaults to generated pet name.
-  --worktree PATH   Explicit worktree path. Defaults to sibling directory.
+  --worktree PATH   Explicit worktree path. Defaults to <repo-parent>/.worktrees/<repo-name>/<worker>.
   -h, --help        Show this help.
 USAGE
 }
@@ -81,7 +81,7 @@ if git -C "$repo" show-ref --verify --quiet "refs/heads/$branch"; then
 fi
 
 if [[ -z "$worktree" ]]; then
-  worktree="$(dirname "$repo")/$(basename "$repo")-dispatch-$name"
+  worktree=$(dispatch_default_worktree "$repo" "$name")
 fi
 [[ ! -e "$worktree" ]] || dispatch_fail "worktree path already exists: $worktree"
 

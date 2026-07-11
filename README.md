@@ -92,6 +92,7 @@ npx skills add https://github.com/lewismazzei/skills/tree/main/dispatch -g -a co
 Typical uses:
 
 - Use `/dispatch <task>` to create a worker worktree, spawn a worker agent, and immediately return control to the parent thread.
+- Store default worker checkouts under `<repo-parent>/.worktrees/<repo-name>/<worker>`; for repos in `/home/lewis/projects`, this keeps project worktrees grouped under `/home/lewis/projects/.worktrees/<project>/`.
 - Track workers by short pet names such as `bright-lantern`.
 - Queue parent-to-worker guidance through disk-backed inbox files.
 - Poll worker status with a cron-safe watcher that queues parent notifications.
