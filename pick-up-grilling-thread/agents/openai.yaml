@@ -1,0 +1,7 @@
+interface:
+  display_name: "Pick Up Grilling Thread"
+  short_description: "Resume an explicit grilling handoff"
+  default_prompt: "Use $pick-up-grilling-thread to resume an explicit grilling handoff in a new thread."
+
+policy:
+  allow_implicit_invocation: false

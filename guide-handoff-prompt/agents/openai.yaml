@@ -10,3 +10,6 @@ dependencies:
       description: "OpenAI developer docs for current model and prompt guidance"
       transport: "streamable_http"
       url: "https://developers.openai.com/mcp"
+
+policy:
+  allow_implicit_invocation: false

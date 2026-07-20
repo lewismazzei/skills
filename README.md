@@ -143,6 +143,7 @@ npx skills add https://github.com/lewismazzei/skills/tree/main/guide-handoff-pro
 
 Typical uses:
 
+- Invoke explicitly with `$guide-handoff-prompt`; Codex does not select it implicitly.
 - Write model-specific handoff prompts, subagent prompts, or runbook prompts.
 - Check that a handoff has success criteria, stopping rules, allowed side effects, and output expectations.
 - Align prompt guidance with current OpenAI developer docs before delivery.
@@ -165,6 +166,7 @@ npx skills add https://github.com/lewismazzei/skills/tree/main/handoff-session -
 
 Typical uses:
 
+- Invoke explicitly with `$handoff-session`; Codex does not select it implicitly.
 - Preserve the current state frontier before ending or crossing a thread boundary.
 - Create the next handoff as a living document for coding, debugging, research, review, planning, documentation, issue triage, or skill work.
 - Maintain `.codex/handoffs/current.handoff.md` as a symlink to the latest generated handoff.
@@ -216,6 +218,7 @@ npx skills add https://github.com/lewismazzei/skills/tree/main/pick-up-grilling-
 
 Typical uses:
 
+- Invoke explicitly with `$pick-up-grilling-thread`; Codex does not select it implicitly.
 - Resume a grilling stream in a new thread from `.codex/handoffs/current.handoff.md`.
 - Confirm the `current.handoff.md` target before reading one handoff.
 - Identify the current decision frontier and continue with the next grilling question.

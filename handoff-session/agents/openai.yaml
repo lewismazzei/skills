@@ -1,0 +1,7 @@
+interface:
+  display_name: "Handoff Session"
+  short_description: "Maintain an explicit session handoff"
+  default_prompt: "Use $handoff-session to create, update, or resume an explicit session handoff."
+
+policy:
+  allow_implicit_invocation: false
