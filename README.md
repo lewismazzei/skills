@@ -296,7 +296,7 @@ Typical uses:
 
 ## scythe
 
-Bootstrap and operate the Scythe control plane from any Codex project directory using one stable checkpoint instead of numbered handoffs.
+Bootstrap and operate the Scythe control plane from any Codex project directory using its durable checkpoint and live Lucia state.
 
 Install globally for Codex:
 
