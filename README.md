@@ -314,6 +314,7 @@ Typical uses:
 
 - Invoke explicitly with `$scythe`; Codex does not select it implicitly.
 - Use it in a fresh thread from any directory to load the current objective, frontier, worker exceptions, and exact next action without handoff confirmation.
+- Return control immediately when Lucia owns the asynchronous next action; wait or monitor only when the user explicitly requests it.
 - Read live Codex context and pace-aware weekly allowance pressure without exposing conversation content.
 - Route clear work to Luna, normal implementation to Terra, and reserve Sol for ambiguous or safety-critical work.
 - Detect late-period surplus and recommend one measured intelligence/effort increase for the next quota window.

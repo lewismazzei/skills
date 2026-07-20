@@ -10,8 +10,9 @@ description: Bootstrap and operate Lewis's Scythe control plane from any Codex w
 1. Run `python3 /home/lewis/.agents/skills/scythe/scripts/bootstrap.py` from the current directory.
 2. Read `/home/lewis/projects/scythe/.codex/control-plane.md` completely. This stable file replaces numbered handoffs; never create a numbered successor.
 3. Treat the script's canonical worker states and usage signal as newer than stale prose in the checkpoint. Preserve its objective, boundaries, and operator frontier.
-4. Report the frontier, active exceptions, routing pressure, and exact next action tersely, then continue without asking for handoff confirmation.
+4. Report the frontier, active exceptions, routing pressure, and exact next action tersely, then take any immediate non-overlapping control-plane action without asking for handoff confirmation.
 5. Do not start another watcher. Lucia owns worker lifecycle, integration, deploy, push, notification, and safe cleanup.
+6. When the next action is Lucia-owned and asynchronous, return control to the user immediately after reconciliation or durable worker guidance. Do not poll, wait, or keep the turn open for worker completion, integration, deploy, or cleanup unless the user explicitly asks to monitor or block.
 
 If the checkpoint is missing or malformed, reconstruct only the stable file from durable Scythe/Lucia sources and canonical runtime records. Do not fall back to creating or continuing numbered handoffs.
 
