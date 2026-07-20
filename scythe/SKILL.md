@@ -1,6 +1,6 @@
 ---
 name: scythe
-description: Bootstrap and operate Lewis's Scythe control plane from any Codex working directory using its stable checkpoint, live Lucia worker state, and Codex usage pressure. Use when the user invokes `$scythe`, asks to start or resume Scythe, or wants the Scythe control plane/frontier.
+description: Bootstrap and operate Lewis's Scythe control plane from any Codex working directory using its durable checkpoint, live Lucia worker state, and Codex usage pressure.
 ---
 
 # Scythe Control Plane
