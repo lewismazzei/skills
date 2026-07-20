@@ -91,7 +91,8 @@ npx skills add https://github.com/lewismazzei/skills/tree/main/dispatch -g -a co
 
 Typical uses:
 
-- Use `/dispatch <task>` to create a worker worktree, spawn a worker agent, and immediately return control to the parent thread.
+- Use `/dispatch <task>` to create a worker worktree, launch an independent top-level `codex exec` worker, and immediately return control to the parent thread.
+- Never use native controller-child subagents for dispatched work; require a null `parentThreadId` when relationship metadata is available so controller archival cannot terminate workers.
 - Store default worker checkouts under `<repo-parent>/.worktrees/<repo-name>/<worker>`; for repos in `/home/lewis/projects`, this keeps project worktrees grouped under `/home/lewis/projects/.worktrees/<project>/`.
 - Track workers by short pet names such as `bright-lantern`.
 - On a pet-name collision, allocate a completely new adjective-noun pair; never append a number.
@@ -321,5 +322,6 @@ Typical uses:
 - Read live Codex context and pace-aware weekly allowance pressure without exposing conversation content.
 - Run control-plane threads on Sol/medium by default, raise them to Sol/high for difficult architecture or lifecycle decisions, and use xhigh only after measured lower-effort failure or explicit instruction.
 - Route clear workers to Luna and normal implementation workers to Terra.
+- Launch every delegated worker through Lucia's top-level background `codex exec` path; never use native controller-child subagents for Scythe work.
 - Detect late-period surplus and recommend one measured intelligence/effort increase for the next quota window.
-- At 150k input tokens, update the bounded stable checkpoint, create and name `scythe/controller/<pet-name>`, submit `$scythe`, return after turn acceptance, and provide the new thread's deep link. Use asynchronous compaction only as the fail-closed fallback.
+- At 150k input tokens, update the bounded stable checkpoint, create and name `scythe/controller/<pet-name>`, submit `$scythe`, return after turn acceptance, and provide the new thread's deep link. Rollover does not archive the predecessor; archive only after proving no active spawned descendants. Use asynchronous compaction only as the fail-closed fallback.

@@ -17,6 +17,13 @@ description: Bootstrap and operate Lewis's Scythe control plane from any Codex w
 
 If the checkpoint is missing or malformed, reconstruct it from durable Scythe/Lucia sources and canonical runtime records.
 
+## Worker launch invariant
+
+- Initiate every delegated worker through Lucia's background `codex exec` path: `node /home/lewis/projects/lucia/lucia.mjs spawn --background --task ... --owner ... --avoid ...`.
+- Never use native `spawn_agent`, collaboration subagents, or another controller-child thread mechanism for Scythe work. Worker threads must be independent top-level threads so controller rollover and later archival cannot interrupt them.
+- After launch, treat the persisted Codex thread id as authoritative. When app-server relationship metadata is available, require `parentThreadId` to be null. A non-null parent is a lifecycle violation: stop dispatching further work, preserve the worker state/worktree, and route repair through Lucia rather than archiving the controller.
+- Controller-local reconciliation, deterministic inspection, checkpoint maintenance, and routing decisions are not delegated worker work and remain in the foreground thread.
+
 ## Routing
 
 Use Standard service tier and the lowest tier that meets the evidence bar:
@@ -41,6 +48,7 @@ Run deterministic checks before model calls. Allow one meaningful recovery attem
 - At `rollover`, first refresh the stable checkpoint in place. Keep it below 48 KiB and label material claims as verified, inferred, or uncertain when their evidence level is not obvious.
 - Run `python3 /home/lewis/.agents/skills/scythe/scripts/rollover.py --project scythe`. It reconciles live Lucia ownership, creates a distinct persisted thread, names it `scythe/controller/<pet-name>`, submits `$scythe` at Sol medium, and returns after `turn/start` acceptance without waiting for completion.
 - On success, give Lewis the returned display name and `codex://threads/<thread-id>` link, then perform no more control-plane work in the predecessor. The successor thread id is authoritative.
+- Rollover transfers authority but does not archive the predecessor. Archive a predecessor only after app-server spawn-subtree reconciliation proves it has no active descendants. Top-level Lucia workers are outside that subtree.
 - On failure, the predecessor remains authoritative. Confirm that with `bootstrap.py`, then run `rollover.py --compact-current` as the asynchronous fallback and continue only after the compaction boundary. Never wait synchronously for a worker or successor.
 
 ## Side effects

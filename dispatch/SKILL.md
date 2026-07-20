@@ -39,16 +39,21 @@ assigned Git worktrees.
 Generated identities are unnumbered adjective-noun pairs. If a pair is already
 reserved, generate a different pair; never append a numeric suffix.
 
-4. Spawn a `worker` agent with the generated worktree path and the prompt in
-   `templates/worker-prompt.md`. Workers are not alone in the codebase; they
-   must not revert edits made by others and must report changed paths.
-   Use `<project-slug>/worker/<pet-name>` as the display name. For a background
-   Codex CLI worker, launch `scripts/thread-name.py --log <codex-log> --name
+4. Start an independent top-level Codex CLI worker with `codex exec`, the
+   generated worktree path, and the prompt in `templates/worker-prompt.md`.
+   Never use native `spawn_agent` or another parent-child subagent mechanism:
+   worker lifecycle must remain independent from the controller thread so
+   archiving or rolling over the controller cannot terminate active work.
+   Workers are not alone in the codebase; they must not revert edits made by
+   others and must report changed paths. Use `<project-slug>/worker/<pet-name>`
+   as the display name. Launch `scripts/thread-name.py --log <codex-log> --name
    <display-name> --worker-dir <dispatch-worker-dir>` as a detached helper; do
    not wait for it in the foreground. The helper persists the emitted session id
    before attempting the optional rename and records any naming error. Keep the
    short pet name as the durable worker id. Thread ids remain authoritative.
-   If spawning fails, mark the worker failed and inspect cleanup eligibility.
+   When app-server relationship metadata is available, verify the worker's
+   `parentThreadId` is null. If launch or that invariant fails, preserve the
+   worktree, mark the worker blocked or failed, and inspect recovery eligibility.
 5. Record the returned agent id:
 
 ```zsh
