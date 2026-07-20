@@ -28,9 +28,10 @@ def usage(*, context: int, used: float, elapsed_fraction: float) -> dict:
 
 class PressureTests(unittest.TestCase):
     def test_context_watch_and_rollover_thresholds(self) -> None:
-        self.assertEqual(bootstrap.pressure(usage(context=74_999, used=5, elapsed_fraction=0.05))["context"], "normal")
-        self.assertEqual(bootstrap.pressure(usage(context=75_000, used=5, elapsed_fraction=0.05))["context"], "watch")
-        self.assertEqual(bootstrap.pressure(usage(context=100_000, used=5, elapsed_fraction=0.05))["context"], "rollover")
+        self.assertEqual(bootstrap.pressure(usage(context=124_999, used=5, elapsed_fraction=0.05))["context"], "normal")
+        self.assertEqual(bootstrap.pressure(usage(context=125_000, used=5, elapsed_fraction=0.05))["context"], "watch")
+        self.assertEqual(bootstrap.pressure(usage(context=149_999, used=5, elapsed_fraction=0.05))["context"], "watch")
+        self.assertEqual(bootstrap.pressure(usage(context=150_000, used=5, elapsed_fraction=0.05))["context"], "rollover")
 
     def test_high_usage_is_pace_aware_not_an_absolute_stop(self) -> None:
         report = bootstrap.pressure(usage(context=10_000, used=80, elapsed_fraction=0.06))

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Scythe"
+  short_description: "Resume the Scythe control plane"
+  default_prompt: "Use $scythe to resume the Scythe control plane from its stable checkpoint."
+
+policy:
+  allow_implicit_invocation: false

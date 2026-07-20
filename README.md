@@ -312,7 +312,8 @@ npx skills add https://github.com/lewismazzei/skills/tree/main/scythe -g -a code
 
 Typical uses:
 
-- Invoke `$scythe` in a fresh thread from any directory to load the current objective, frontier, worker exceptions, and exact next action without handoff confirmation.
+- Invoke explicitly with `$scythe`; Codex does not select it implicitly.
+- Use it in a fresh thread from any directory to load the current objective, frontier, worker exceptions, and exact next action without handoff confirmation.
 - Read live Codex context and pace-aware weekly allowance pressure without exposing conversation content.
 - Route clear work to Luna, normal implementation to Terra, and reserve Sol for ambiguous or safety-critical work.
 - Detect late-period surplus and recommend one measured intelligence/effort increase for the next quota window.

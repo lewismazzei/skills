@@ -120,7 +120,7 @@ def pressure(usage: dict) -> dict:
     reset_text = usage.get("weekly_resets_at")
     context_state = "unknown"
     if isinstance(context, (int, float)):
-        context_state = "rollover" if context >= 100_000 else "watch" if context >= 75_000 else "normal"
+        context_state = "rollover" if context >= 150_000 else "watch" if context >= 125_000 else "normal"
     elapsed_percent = None
     pace_ratio = None
     projected_percent = None

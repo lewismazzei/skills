@@ -29,7 +29,7 @@ Run deterministic checks before model calls. Allow one meaningful recovery attem
 
 ## Circuit breakers
 
-- Context: `watch` at 75,000 input tokens; `rollover` at 100,000.
+- Context: `watch` at 125,000 input tokens; `rollover` at 150,000.
 - Weekly allowance: compare usage consumed with elapsed share of the seven-day window. Treat above 1.25x sustainable pace as `elevated`, above 2x as `high burn`, and 95% absolute usage as `reserve`.
 - In the final quarter of a window, treat pace below 0.75x as `surplus`. Prefer higher intelligence/effort on worthwhile queued work and carry a one-step increase into the next period; never generate filler work to spend quota.
 - `High burn` lowers defaults and removes redundant calls but does not block useful approved work. Under `reserve`, pause discretionary model-backed work while allowing necessary recovery and customer-facing work at the lowest proven tier.
