@@ -110,7 +110,7 @@ dispatch_worker_dir() {
 
 dispatch_write_state() {
   local dir="$1"
-  local name worker_status repo worktree branch task owner avoid agent_id created_at updated_at dirty branch_merged cleanup_ready
+  local name worker_status repo worktree branch task owner avoid agent_id display_name thread_name_error created_at updated_at dirty branch_merged cleanup_ready
   name=$(dispatch_read "$dir" name)
   worker_status=$(dispatch_read "$dir" status)
   repo=$(dispatch_read "$dir" repo)
@@ -120,6 +120,8 @@ dispatch_write_state() {
   owner=$(dispatch_read "$dir" owner)
   avoid=$(dispatch_read "$dir" avoid)
   agent_id=$(dispatch_read "$dir" agent_id)
+  display_name=$(dispatch_read "$dir" display_name)
+  thread_name_error=$(dispatch_read "$dir" thread_name_error)
   created_at=$(dispatch_read "$dir" created_at)
   dirty=$(dispatch_read "$dir" dirty)
   branch_merged=$(dispatch_read "$dir" branch_merged)
@@ -138,6 +140,8 @@ dispatch_write_state() {
     printf '  "owner": %s,\n' "$(dispatch_json_string "$owner")"
     printf '  "avoid": %s,\n' "$(dispatch_json_string "$avoid")"
     printf '  "agent_id": %s,\n' "$(dispatch_json_string "$agent_id")"
+    printf '  "display_name": %s,\n' "$(dispatch_json_string "$display_name")"
+    printf '  "thread_name_error": %s,\n' "$(dispatch_json_string "$thread_name_error")"
     printf '  "created_at": %s,\n' "$(dispatch_json_string "$created_at")"
     printf '  "updated_at": %s,\n' "$(dispatch_json_string "$updated_at")"
     printf '  "dirty": %s,\n' "$(dispatch_json_string "$dirty")"

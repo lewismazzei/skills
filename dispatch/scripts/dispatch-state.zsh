@@ -12,6 +12,7 @@ Usage:
 Options:
   --status STATUS   Set worker status.
   --agent-id ID     Record spawned agent id.
+  --display-name ID Record the worker thread display name.
   --message TEXT    Append a worker event/outbox message.
   -h, --help        Show this help.
 USAGE
@@ -20,6 +21,7 @@ USAGE
 worker=""
 worker_status=""
 agent_id=""
+display_name=""
 message=""
 
 while (( $# )); do
@@ -27,6 +29,7 @@ while (( $# )); do
     --worker) worker="${2:-}"; shift 2 ;;
     --status) worker_status="${2:-}"; shift 2 ;;
     --agent-id) agent_id="${2:-}"; shift 2 ;;
+    --display-name) display_name="${2:-}"; shift 2 ;;
     --message) message="${2:-}"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) usage >&2; dispatch_fail "unknown argument: $1" ;;
@@ -42,6 +45,9 @@ if [[ -n "$worker_status" ]]; then
 fi
 if [[ -n "$agent_id" ]]; then
   dispatch_write "$worker_dir" agent_id "$agent_id"
+fi
+if [[ -n "$display_name" ]]; then
+  dispatch_write "$worker_dir" display_name "$display_name"
 fi
 if [[ -n "$message" ]]; then
   dispatch_event "$worker_dir" "${worker_status:-message}" "$message" outbox.ndjson

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 import re
@@ -43,6 +44,32 @@ class DispatchPetNameTests(unittest.TestCase):
             self.assertNotEqual(first_name, second_name)
             self.assertRegex(first_name, r"^[a-z]+-[a-z]+$")
             self.assertRegex(second_name, r"^[a-z]+-[a-z]+$")
+
+            worker_dir = dispatch_home / "workers" / first_name
+            (worker_dir / "agent_id").write_text(
+                "019f8016-c8e5-7ae0-8935-6e332c13f90a\n",
+                encoding="utf-8",
+            )
+            subprocess.run(
+                [
+                    str(SCRIPT.parent / "dispatch-state.zsh"),
+                    "--worker",
+                    first_name,
+                    "--status",
+                    "running",
+                    "--display-name",
+                    f"scythe/worker/{first_name}",
+                    "--message",
+                    "named",
+                ],
+                check=True,
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+            state = json.loads((worker_dir / "state.json").read_text(encoding="utf-8"))
+            self.assertEqual(state["agent_id"], "019f8016-c8e5-7ae0-8935-6e332c13f90a")
+            self.assertEqual(state["display_name"], f"scythe/worker/{first_name}")
 
 
 if __name__ == "__main__":

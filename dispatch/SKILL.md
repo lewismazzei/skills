@@ -42,9 +42,12 @@ reserved, generate a different pair; never append a numeric suffix.
 4. Spawn a `worker` agent with the generated worktree path and the prompt in
    `templates/worker-prompt.md`. Workers are not alone in the codebase; they
    must not revert edits made by others and must report changed paths.
-   Use `<project-slug>/worker/<pet-name>` as the display name when the spawning
-   surface exposes thread naming; keep the short pet name as the durable worker
-   id. Thread ids, not display names, remain authoritative.
+   Use `<project-slug>/worker/<pet-name>` as the display name. For a background
+   Codex CLI worker, launch `scripts/thread-name.py --log <codex-log> --name
+   <display-name> --worker-dir <dispatch-worker-dir>` as a detached helper; do
+   not wait for it in the foreground. The helper persists the emitted session id
+   before attempting the optional rename and records any naming error. Keep the
+   short pet name as the durable worker id. Thread ids remain authoritative.
    If spawning fails, mark the worker failed and inspect cleanup eligibility.
 5. Record the returned agent id:
 
