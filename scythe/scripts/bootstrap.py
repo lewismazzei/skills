@@ -137,21 +137,32 @@ def pressure(usage: dict) -> dict:
         except (TypeError, ValueError):
             pass
     weekly_state = "unknown"
+    next_period_adjustment = "hold"
     if isinstance(weekly, (int, float)):
         if weekly >= 95:
             weekly_state = "reserve"
         elif pace_ratio is not None and pace_ratio > 2:
             weekly_state = "high-burn"
+            next_period_adjustment = "decrease-one-step"
         elif pace_ratio is not None and pace_ratio > 1.25:
             weekly_state = "elevated"
+            next_period_adjustment = "decrease-one-step"
+        elif elapsed_percent is not None and elapsed_percent >= 75 and pace_ratio is not None and pace_ratio < 0.75:
+            weekly_state = "surplus"
+            next_period_adjustment = "increase-one-step"
         else:
             weekly_state = "normal"
+    surplus_points = None
+    if elapsed_percent is not None and isinstance(weekly, (int, float)):
+        surplus_points = max(0.0, elapsed_percent - float(weekly))
     return {
         "context": context_state,
         "weekly": weekly_state,
         "weekly_elapsed_percent": round(elapsed_percent, 1) if elapsed_percent is not None else None,
         "weekly_pace_ratio": round(pace_ratio, 2) if pace_ratio is not None else None,
         "weekly_projected_percent_at_reset": round(projected_percent, 1) if projected_percent is not None else None,
+        "weekly_surplus_percent_points": round(surplus_points, 1) if surplus_points is not None else None,
+        "next_period_adjustment": next_period_adjustment,
         "rollover_recommended": context_state == "rollover",
         "discretionary_model_work_allowed": weekly_state != "reserve",
     }

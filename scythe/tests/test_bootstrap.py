@@ -43,6 +43,17 @@ class PressureTests(unittest.TestCase):
         self.assertEqual(report["weekly"], "reserve")
         self.assertFalse(report["discretionary_model_work_allowed"])
 
+    def test_late_surplus_recommends_one_step_increase_next_period(self) -> None:
+        report = bootstrap.pressure(usage(context=10_000, used=40, elapsed_fraction=0.9))
+        self.assertEqual(report["weekly"], "surplus")
+        self.assertEqual(report["next_period_adjustment"], "increase-one-step")
+        self.assertGreater(report["weekly_surplus_percent_points"], 49)
+
+    def test_early_low_usage_does_not_prematurely_increase_next_period(self) -> None:
+        report = bootstrap.pressure(usage(context=10_000, used=5, elapsed_fraction=0.2))
+        self.assertEqual(report["weekly"], "normal")
+        self.assertEqual(report["next_period_adjustment"], "hold")
+
 
 if __name__ == "__main__":
     unittest.main()

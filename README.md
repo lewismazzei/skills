@@ -315,4 +315,5 @@ Typical uses:
 - Invoke `$scythe` in a fresh thread from any directory to load the current objective, frontier, worker exceptions, and exact next action without handoff confirmation.
 - Read live Codex context and pace-aware weekly allowance pressure without exposing conversation content.
 - Route clear work to Luna, normal implementation to Terra, and reserve Sol for ambiguous or safety-critical work.
+- Detect late-period surplus and recommend one measured intelligence/effort increase for the next quota window.
 - Update `.codex/control-plane.md` in place and never create numbered successor handoffs.
