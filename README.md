@@ -293,3 +293,26 @@ Typical uses:
 - Capture before/after evidence with the same settings.
 - Fix only the highest-impact problem in each pass.
 - Keep changes only when the measured bar improves and guardrails stay green.
+
+## scythe
+
+Bootstrap and operate the Scythe control plane from any Codex project directory using one stable checkpoint instead of numbered handoffs.
+
+Install globally for Codex:
+
+```bash
+add-skill lewismazzei/skills/scythe -y
+```
+
+Direct folder install:
+
+```bash
+npx skills add https://github.com/lewismazzei/skills/tree/main/scythe -g -a codex -y
+```
+
+Typical uses:
+
+- Invoke `$scythe` in a fresh thread from any directory to load the current objective, frontier, worker exceptions, and exact next action without handoff confirmation.
+- Read live Codex context and pace-aware weekly allowance pressure without exposing conversation content.
+- Route clear work to Luna, normal implementation to Terra, and reserve Sol for ambiguous or safety-critical work.
+- Update `.codex/control-plane.md` in place and never create numbered successor handoffs.
