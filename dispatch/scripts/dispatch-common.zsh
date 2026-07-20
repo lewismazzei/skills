@@ -79,11 +79,28 @@ dispatch_event() {
 
 dispatch_pet_name() {
   local seed_input="${1:-dispatch}"
+  local offset="${2:-0}"
   local seed
   local adjectives=(amber brisk calm cedar clear clever copper crisp deft eager gentle golden honest lucid lucky mellow nimble quiet rapid steady tidy vivid warm wise)
   local nouns=(anchor atlas beacon bridge canyon comet compass harbor lantern maple meadow mint orbit pebble pixel quartz ribbon summit valley velvet vista willow)
   seed=$(printf '%s' "$seed_input" | cksum | awk '{print $1}')
-  printf '%s-%s\n' "$adjectives[$((seed % ${#adjectives[@]} + 1))]" "$nouns[$(((seed / ${#adjectives[@]}) % ${#nouns[@]} + 1))]"
+  local index=$(((seed + offset) % (${#adjectives[@]} * ${#nouns[@]})))
+  printf '%s-%s\n' "$adjectives[$((index % ${#adjectives[@]} + 1))]" "$nouns[$((index / ${#adjectives[@]} + 1))]"
+}
+
+dispatch_allocate_pet_name() {
+  local seed_input="$1"
+  local root="$2"
+  local offset candidate
+  local total=$((24 * 22))
+  for (( offset = 0; offset < total; offset++ )); do
+    candidate=$(dispatch_pet_name "$seed_input" "$offset")
+    if [[ ! -e "$root/workers/$candidate" && ! -e "$root/completed/$candidate" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+  dispatch_fail "pet-name namespace exhausted; refusing a numbered suffix"
 }
 
 dispatch_worker_dir() {

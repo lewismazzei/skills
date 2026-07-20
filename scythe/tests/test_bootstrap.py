@@ -3,7 +3,11 @@ from __future__ import annotations
 import datetime as dt
 import importlib.util
 from pathlib import Path
+import json
+import os
+import tempfile
 import unittest
+from unittest import mock
 
 
 MODULE_PATH = Path(__file__).parents[1] / "scripts" / "bootstrap.py"
@@ -54,6 +58,95 @@ class PressureTests(unittest.TestCase):
         report = bootstrap.pressure(usage(context=10_000, used=5, elapsed_fraction=0.2))
         self.assertEqual(report["weekly"], "normal")
         self.assertEqual(report["next_period_adjustment"], "hold")
+
+
+class ControllerStateTests(unittest.TestCase):
+    def test_current_controller_is_authoritative(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            registry = Path(directory) / "controllers.json"
+            registry.write_text(json.dumps({
+                "schema": 1,
+                "projects": {"scythe": {"active": {
+                    "thread_id": "thread-current",
+                    "display_name": "scythe/controller/nimble-vista",
+                }}},
+            }), encoding="utf-8")
+            with mock.patch.object(bootstrap, "CONTROLLERS", registry), mock.patch.dict(
+                os.environ, {"CODEX_THREAD_ID": "thread-current"}
+            ):
+                report = bootstrap.controller_state()
+
+        self.assertEqual(report["authority"], "active")
+        self.assertEqual(report["active_deeplink"], "codex://threads/thread-current")
+
+    def test_old_controller_is_superseded(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            registry = Path(directory) / "controllers.json"
+            registry.write_text(json.dumps({
+                "schema": 1,
+                "projects": {"scythe": {"active": {
+                    "thread_id": "thread-new",
+                    "display_name": "scythe/controller/clear-maple",
+                }}},
+            }), encoding="utf-8")
+            with mock.patch.object(bootstrap, "CONTROLLERS", registry), mock.patch.dict(
+                os.environ, {"CODEX_THREAD_ID": "thread-old"}
+            ):
+                report = bootstrap.controller_state()
+
+        self.assertEqual(report["authority"], "superseded")
+        self.assertEqual(report["active"]["thread_id"], "thread-new")
+
+    def test_executing_pending_successor_self_promotes_after_lock_release(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            registry = Path(directory) / "controllers.json"
+            registry.write_text(json.dumps({
+                "schema": 1,
+                "projects": {"scythe": {
+                    "active": {"thread_id": "thread-old", "display_name": None, "state": "active"},
+                    "pending": {
+                        "thread_id": "thread-new",
+                        "display_name": "scythe/controller/clear-maple",
+                        "pet_name": "clear-maple",
+                        "project": "scythe",
+                        "role": "controller",
+                        "state": "starting",
+                    },
+                    "history": [],
+                }},
+            }), encoding="utf-8")
+            with mock.patch.object(bootstrap, "CONTROLLERS", registry), mock.patch.dict(
+                os.environ, {"CODEX_THREAD_ID": "thread-new"}
+            ):
+                report = bootstrap.controller_state()
+            persisted = json.loads(registry.read_text(encoding="utf-8"))["projects"]["scythe"]
+
+        self.assertEqual(report["authority"], "active")
+        self.assertEqual(persisted["active"]["thread_id"], "thread-new")
+        self.assertEqual(persisted["history"][0]["thread_id"], "thread-old")
+        self.assertNotIn("pending", persisted)
+
+    def test_predecessor_does_not_overlap_an_unresolved_starting_successor(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            registry = Path(directory) / "controllers.json"
+            registry.write_text(json.dumps({
+                "schema": 1,
+                "projects": {"scythe": {
+                    "active": {"thread_id": "thread-old", "display_name": None, "state": "active"},
+                    "pending": {
+                        "thread_id": "thread-new",
+                        "display_name": "scythe/controller/clear-maple",
+                        "state": "starting",
+                    },
+                }},
+            }), encoding="utf-8")
+            with mock.patch.object(bootstrap, "CONTROLLERS", registry), mock.patch.dict(
+                os.environ, {"CODEX_THREAD_ID": "thread-old"}
+            ):
+                report = bootstrap.controller_state()
+
+        self.assertEqual(report["authority"], "handoff-in-progress")
+        self.assertEqual(report["pending"]["thread_id"], "thread-new")
 
 
 if __name__ == "__main__":

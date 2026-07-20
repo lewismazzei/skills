@@ -42,7 +42,9 @@ write_field() {
 
 pet_id() {
   local seed_input="$1"
+  local offset="${2:-0}"
   local seed
+  local index
   local adjective_index
   local noun_index
   local adjectives=(
@@ -57,8 +59,9 @@ pet_id() {
   )
 
   seed=$(printf '%s' "$seed_input" | cksum | awk '{print $1}')
-  adjective_index=$((seed % ${#adjectives[@]} + 1))
-  noun_index=$(((seed / ${#adjectives[@]}) % ${#nouns[@]} + 1))
+  index=$(((seed + offset) % (${#adjectives[@]} * ${#nouns[@]})))
+  adjective_index=$((index % ${#adjectives[@]} + 1))
+  noun_index=$((index / ${#adjectives[@]} + 1))
   printf '%s-%s' "$adjectives[$adjective_index]" "$nouns[$noun_index]"
 }
 
@@ -176,13 +179,17 @@ completed_root="${CODEX_ISOLATE_COMPLETED_DIR:-$HOME/.codex/isolate/completed}"
 
 if [[ -z "$work_id" ]]; then
   entropy="$(date -u +%Y%m%d%H%M%S)-$task-$repo"
-  base_work_id=$(pet_id "$entropy")
-  work_id="$base_work_id"
-  suffix=2
-  while work_id_taken "$work_id"; do
-    work_id="$base_work_id-$suffix"
-    suffix=$((suffix + 1))
+  total_pet_ids=$((25 * 24))
+  for (( offset = 0; offset < total_pet_ids; offset++ )); do
+    candidate=$(pet_id "$entropy" "$offset")
+    if ! work_id_taken "$candidate"; then
+      work_id="$candidate"
+      break
+    fi
   done
+  [[ -n "$work_id" ]] || fail "pet-name namespace exhausted; refusing a numbered suffix"
+else
+  [[ ! "$work_id" =~ '-[0-9]+$' ]] || fail "numbered pet names are not allowed: $work_id"
 fi
 
 if [[ -z "$branch" ]]; then

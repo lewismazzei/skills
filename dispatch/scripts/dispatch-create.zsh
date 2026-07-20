@@ -64,15 +64,10 @@ mkdir -p "$root/workers" "$root/completed" "$root/control-plane"
 
 if [[ -z "$name" ]]; then
   seed="$(dispatch_now)-$repo-$task"
-  base_name=$(dispatch_pet_name "$seed")
-  name="$base_name"
-  suffix=2
-  while [[ -e "$root/workers/$name" || -e "$root/completed/$name" ]]; do
-    name="$base_name-$suffix"
-    suffix=$((suffix + 1))
-  done
+  name=$(dispatch_allocate_pet_name "$seed" "$root")
 else
   name=$(dispatch_slug "$name")
+  [[ ! "$name" =~ '-[0-9]+$' ]] || dispatch_fail "numbered pet names are not allowed: $name"
 fi
 
 branch="dispatch/$name"

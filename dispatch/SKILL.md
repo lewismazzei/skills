@@ -36,9 +36,15 @@ assigned Git worktrees.
 ~/skills/dispatch/scripts/dispatch-create.zsh --repo /path/to/repo --task "task" --owner "files or dirs"
 ```
 
+Generated identities are unnumbered adjective-noun pairs. If a pair is already
+reserved, generate a different pair; never append a numeric suffix.
+
 4. Spawn a `worker` agent with the generated worktree path and the prompt in
    `templates/worker-prompt.md`. Workers are not alone in the codebase; they
    must not revert edits made by others and must report changed paths.
+   Use `<project-slug>/worker/<pet-name>` as the display name when the spawning
+   surface exposes thread naming; keep the short pet name as the durable worker
+   id. Thread ids, not display names, remain authoritative.
    If spawning fails, mark the worker failed and inspect cleanup eligibility.
 5. Record the returned agent id:
 

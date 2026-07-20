@@ -4,10 +4,12 @@
 from __future__ import annotations
 
 import datetime as dt
+import fcntl
 import json
 import os
 from pathlib import Path
 import subprocess
+import tempfile
 import time
 
 
@@ -17,6 +19,7 @@ LUCIA_ROOT = Path(os.environ.get("LUCIA_ROOT", "/home/lewis/projects/lucia")).re
 CODEX_HOME = Path(os.environ.get("CODEX_HOME", str(HOME / ".codex"))).resolve()
 CHECKPOINT = SCYTHE_ROOT / ".codex" / "control-plane.md"
 WORKERS_ROOT = CODEX_HOME / "dispatch" / "workers"
+CONTROLLERS = CODEX_HOME / "scythe" / "controllers.json"
 TARGET_REPOS = {str(SCYTHE_ROOT), str(LUCIA_ROOT)}
 
 
@@ -62,6 +65,91 @@ def worker_states() -> list[dict]:
             }
         )
     return workers
+
+
+def atomic_write_json(path: Path, value: dict) -> None:
+    payload = json.dumps(value, indent=2, sort_keys=True) + "\n"
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as handle:
+            temp_path = Path(handle.name)
+            handle.write(payload)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.chmod(temp_path, 0o600)
+        os.replace(temp_path, path)
+    finally:
+        if temp_path is not None:
+            temp_path.unlink(missing_ok=True)
+
+
+def promote_pending_controller(registry: dict, project: dict, active: dict, pending: dict) -> dict:
+    activated_at = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    successor = dict(pending)
+    successor.pop("worker_snapshot", None)
+    successor["state"] = "active"
+    successor["activated_at"] = activated_at
+    successor["source"] = "successor-self-promotion"
+    predecessor = dict(active)
+    predecessor["state"] = "retired"
+    predecessor["retired_at"] = activated_at
+    predecessor["successor_thread_id"] = successor.get("thread_id")
+    project.setdefault("history", []).append(predecessor)
+    project["active"] = successor
+    project.pop("pending", None)
+    project["updated_at"] = activated_at
+    atomic_write_json(CONTROLLERS, registry)
+    return successor
+
+
+def controller_state() -> dict:
+    thread_id = os.environ.get("CODEX_THREAD_ID", "").strip()
+    report = {"registry": str(CONTROLLERS), "thread_id": thread_id or None, "authority": "unregistered"}
+    if not CONTROLLERS.is_file():
+        return report
+    lock_path = CONTROLLERS.with_suffix(CONTROLLERS.suffix + ".lock")
+    with lock_path.open("a+", encoding="utf-8") as lock_handle:
+        fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX)
+        registry = read_json_with_retry(CONTROLLERS)
+        project = ((registry.get("projects") or {}).get("scythe") or {})
+        active = project.get("active") if isinstance(project, dict) else None
+        pending = project.get("pending") if isinstance(project, dict) else None
+        if (
+            thread_id
+            and isinstance(active, dict)
+            and isinstance(pending, dict)
+            and pending.get("thread_id") == thread_id
+            and pending.get("state") == "starting"
+        ):
+            active = promote_pending_controller(registry, project, active, pending)
+            pending = None
+    if not isinstance(active, dict):
+        report["authority"] = "invalid-registry"
+        return report
+    report["active"] = {
+        "display_name": active.get("display_name"),
+        "thread_id": active.get("thread_id"),
+    }
+    if thread_id and active.get("thread_id") == thread_id:
+        if isinstance(pending, dict) and pending.get("state") == "starting":
+            report["authority"] = "handoff-in-progress"
+            report["pending"] = {
+                "display_name": pending.get("display_name"),
+                "thread_id": pending.get("thread_id"),
+            }
+        else:
+            report["authority"] = "active"
+    elif thread_id and isinstance(pending, dict) and pending.get("thread_id") == thread_id:
+        report["authority"] = "pending"
+        report["pending"] = {
+            "display_name": pending.get("display_name"),
+            "state": pending.get("state"),
+        }
+    else:
+        report["authority"] = "superseded"
+    if active.get("thread_id"):
+        report["active_deeplink"] = f"codex://threads/{active['thread_id']}"
+    return report
 
 
 def candidate_sessions() -> list[Path]:
@@ -193,6 +281,7 @@ def main() -> None:
     report = {
         "schema": 1,
         "checkpoint": {"path": str(CHECKPOINT), "exists": CHECKPOINT.is_file()},
+        "controller": controller_state(),
         "roots": {"scythe": str(SCYTHE_ROOT), "lucia": str(LUCIA_ROOT)},
         "usage": usage,
         "pressure": pressure(usage),

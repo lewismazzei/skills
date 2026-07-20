@@ -94,6 +94,8 @@ Typical uses:
 - Use `/dispatch <task>` to create a worker worktree, spawn a worker agent, and immediately return control to the parent thread.
 - Store default worker checkouts under `<repo-parent>/.worktrees/<repo-name>/<worker>`; for repos in `/home/lewis/projects`, this keeps project worktrees grouped under `/home/lewis/projects/.worktrees/<project>/`.
 - Track workers by short pet names such as `bright-lantern`.
+- On a pet-name collision, allocate a completely new adjective-noun pair; never append a number.
+- Use `<project-slug>/worker/<pet-name>` as the display name when the thread surface exposes naming, while keeping the short pet name as the durable worker id.
 - Queue parent-to-worker guidance through disk-backed inbox files.
 - Poll worker status with a cron-safe watcher that queues parent notifications.
 - Require ready workers to satisfy a SwarmForge-inspired verification
@@ -194,6 +196,7 @@ npx skills add https://github.com/lewismazzei/skills/tree/main/isolate -g -a cod
 Typical uses:
 
 - Use `/isolate <work>` in a dispatcher thread to create a durable work request with an easy-to-type pet-name work ID and print `/isolate start <work_id>` for a new worker thread.
+- Allocate a fresh adjective-noun pair on collision instead of creating numbered names.
 - Use `/isolate start <work_id>` in a worker thread so all implementation happens inside a unique worktree.
 - Use `/isolate finish <work_id>` in the dispatcher thread to commit worker changes, merge them, remove the worktree, delete the merged branch, and mark the request completed.
 - Keep the parent thread available for planning, guidance, review, and integration while worker threads continue separately.
@@ -316,6 +319,7 @@ Typical uses:
 - Use it in a fresh thread from any directory to load the current objective, frontier, worker exceptions, and exact next action without handoff confirmation.
 - Return control immediately when Lucia owns the asynchronous next action; wait or monitor only when the user explicitly requests it.
 - Read live Codex context and pace-aware weekly allowance pressure without exposing conversation content.
-- Route clear work to Luna, normal implementation to Terra, and reserve Sol for ambiguous or safety-critical work.
+- Run control-plane threads on Sol/medium by default, raise them to Sol/high for difficult architecture or lifecycle decisions, and use xhigh only after measured lower-effort failure or explicit instruction.
+- Route clear workers to Luna and normal implementation workers to Terra.
 - Detect late-period surplus and recommend one measured intelligence/effort increase for the next quota window.
-- Update `.codex/control-plane.md` in place and never create numbered successor handoffs.
+- At 150k input tokens, update the bounded stable checkpoint, create and name `scythe/controller/<pet-name>`, submit `$scythe`, return after turn acceptance, and provide the new thread's deep link. Use asynchronous compaction only as the fail-closed fallback.

@@ -1,6 +1,6 @@
 ---
 name: isolate
-description: Create, run, and finish isolated Git worktree requests for delegated or multi-thread worker tasks. Use when the user invokes /isolate <work>, /isolate start <work_id>, or /isolate finish <work_id>; delegates work to another Codex thread; or wants deterministic worktree startup/status/finish/teardown.
+description: Create, run, and finish isolated Git worktree requests for delegated or multi-thread worker tasks. Use when the user invokes /isolate with work, /isolate start with a work id, or /isolate finish with a work id; delegates work to another Codex thread; or wants deterministic worktree startup/status/finish/teardown.
 ---
 
 # Isolate
@@ -18,7 +18,8 @@ When the user invokes `/isolate` with a work description in the main thread, cre
 ```
 
 If the repo is not explicit, infer the nearest Git repo from the current directory. If ownership is unclear, keep it narrow from context or mark it `unspecified` so the worker asks before broad edits.
-Generated work IDs are short pet-name IDs such as `amber-lantern`; the script appends a numeric suffix if needed.
+Generated work IDs are short adjective-noun pet names such as `amber-lantern`.
+On collision, choose a different pair; never append a numeric suffix.
 If the argument is a single token and `~/.codex/isolate/requests/<token>` exists, treat it as `start <token>` instead of dispatching new work.
 
 ### Worker: `/isolate start <work_id>`
