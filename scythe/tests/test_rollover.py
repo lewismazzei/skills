@@ -98,6 +98,15 @@ class RolloverTests(unittest.TestCase):
         })
         self.assertEqual(report["status"], "accepted")
         self.assertEqual(report["desktop_deeplink"], "codex://threads/thread-new")
+        self.assertEqual(
+            report["handoff_text"],
+            "Controller rollover complete.\n\n"
+            "New controller: `scythe/controller/nimble-vista`\n"
+            "Successor thread ID: `thread-new`\n"
+            "Desktop deep link: `codex://threads/thread-new`\n\n"
+            "If the deep link does not open, search chats for the exact controller name.",
+        )
+        self.assertNotIn("](codex://", report["handoff_text"])
         project = registry["projects"]["scythe"]
         self.assertEqual(project["active"]["thread_id"], "thread-new")
         self.assertEqual(project["history"][0]["thread_id"], "thread-old")

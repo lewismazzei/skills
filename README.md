@@ -324,4 +324,4 @@ Typical uses:
 - Route clear workers to Luna and normal implementation workers to Terra.
 - Launch every delegated worker through Lucia's top-level background `codex exec` path; never use native controller-child subagents for Scythe work.
 - Detect late-period surplus and recommend one measured intelligence/effort increase for the next quota window.
-- At 150k input tokens, update the bounded stable checkpoint, create and name `scythe/controller/<pet-name>`, submit `$scythe`, return after turn acceptance, and provide the new thread's deep link. Rollover does not archive the predecessor; archive only after proving no active spawned descendants. Use asynchronous compaction only as the fail-closed fallback.
+- At 150k input tokens, update the bounded stable checkpoint, create and name `scythe/controller/<pet-name>`, submit `$scythe`, return after turn acceptance, and provide a non-clickable desktop deep link plus the exact controller name/thread ID for cross-client chat search. Rollover does not archive the predecessor; archive only after proving no active spawned descendants. Use asynchronous compaction only as the fail-closed fallback.

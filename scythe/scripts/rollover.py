@@ -64,6 +64,17 @@ def display_name(project: str, role: str, pet_name: str) -> str:
     return f"{validate_slug(project, 'project')}/{validate_slug(role, 'role')}/{validate_slug(pet_name, 'pet name')}"
 
 
+def successor_handoff_text(*, controller_name: str, thread_id: str) -> str:
+    deeplink = f"codex://threads/{thread_id}"
+    return (
+        "Controller rollover complete.\n\n"
+        f"New controller: `{controller_name}`\n"
+        f"Successor thread ID: `{thread_id}`\n"
+        f"Desktop deep link: `{deeplink}`\n\n"
+        "If the deep link does not open, search chats for the exact controller name."
+    )
+
+
 def all_pet_names() -> list[str]:
     return [f"{adjective}-{noun}" for adjective in ADJECTIVES for noun in NOUNS]
 
@@ -510,6 +521,10 @@ def perform_rollover(
         "desktop_deeplink": f"codex://threads/{successor_thread_id}",
         "display_name": successor_name,
         "effort": effort,
+        "handoff_text": successor_handoff_text(
+            controller_name=successor_name,
+            thread_id=successor_thread_id,
+        ),
         "model": model,
         "pet_name": pet_name,
         "project": project,
