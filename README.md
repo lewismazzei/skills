@@ -321,7 +321,7 @@ Typical uses:
 - Enforce the bootstrap's machine-readable act-before-final gate: status-only completion is forbidden for an authoritative controller while safe immediate work or a recoverable control-plane fault remains.
 - Return control immediately when Lucia owns the asynchronous next action; wait or monitor only when the user explicitly requests it.
 - Read live Codex context and pace-aware weekly allowance pressure without exposing conversation content.
-- Run control-plane threads on Sol/medium by default, raise them to Sol/high for difficult architecture or lifecycle decisions, and use xhigh only after measured lower-effort failure or explicit instruction.
+- Run Scythe control-plane threads on Sol/xhigh by explicit operator choice while continuing to route workers at the lowest effort that meets their evidence bar.
 - Route clear workers to Luna and normal implementation workers to Terra.
 - Launch every delegated worker through Lucia's top-level background `codex exec` path; never use native controller-child subagents for Scythe work.
 - Detect late-period surplus and recommend one measured intelligence/effort increase for the next quota window.

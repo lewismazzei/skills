@@ -91,7 +91,7 @@ class RolloverTests(unittest.TestCase):
         ])
         self.assertEqual(client.calls[1][1]["name"], "scythe/controller/nimble-vista")
         self.assertEqual(client.calls[2][1], {
-            "effort": "medium",
+            "effort": "xhigh",
             "input": [{"type": "text", "text": "$scythe"}],
             "serviceTier": "default",
             "threadId": "thread-new",

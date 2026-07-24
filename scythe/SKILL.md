@@ -38,12 +38,12 @@ If the checkpoint is missing or malformed, reconstruct it from durable Scythe/Lu
 
 Use Standard service tier and the lowest tier that meets the evidence bar:
 
-- Sol medium: default for the control-plane thread.
+- Sol xhigh: default for Scythe control-plane threads, by explicit operator choice.
 - Luna low/medium: clear, repeatable extraction, classification, formatting, narrow docs/config, or deterministic revalidation.
 - Terra medium: bounded implementation, research synthesis, and routine workers.
 - Terra high: one closeout review or a bounded difficult fix when weekly pressure is critical.
 - Sol high: difficult architecture or lifecycle decisions, security, migrations, or high-value ambiguity.
-- Never default to `xhigh`; use it only after a measured lower-effort failure or explicit instruction. Never inherit it merely because the predecessor used it.
+- Keep `xhigh` scoped to controller threads. Workers still use the lowest tier and effort that meet their evidence bar.
 
 Run deterministic checks before model calls. Allow one meaningful recovery attempt per unchanged incident and one autoreview per frozen result; rerun review only after code changes. Never run a review panel unless explicitly justified.
 
@@ -56,7 +56,7 @@ Run deterministic checks before model calls. Allow one meaningful recovery attem
 - Route clear work to Luna and normal implementation/review to Terra. Use Sol when ambiguity, quality, or safety actually requires it; current usage alone is not a prohibition.
 - Tune one dimension per period—model tier or reasoning effort—and compare quality plus burn before adjusting again.
 - At `rollover`, first refresh the stable checkpoint in place. Keep it below 48 KiB and label material claims as verified, inferred, or uncertain when their evidence level is not obvious.
-- Run `python3 /home/lewis/.agents/skills/scythe/scripts/rollover.py --project scythe`. It reconciles live Lucia ownership, creates a distinct persisted thread, names it `scythe/controller/<pet-name>`, submits `$scythe` at Sol medium, and returns after `turn/start` acceptance without waiting for completion.
+- Run `python3 /home/lewis/.agents/skills/scythe/scripts/rollover.py --project scythe`. It reconciles live Lucia ownership, creates a distinct persisted thread, names it `scythe/controller/<pet-name>`, submits `$scythe` at Sol xhigh, and returns after `turn/start` acceptance without waiting for completion.
 - On success, reproduce the returned `handoff_text` verbatim, then perform no more control-plane work in the predecessor. Keep the `codex://threads/<thread-id>` desktop deep link inside inline code; never wrap it in a Markdown link because some mobile clients misroute clickable custom-scheme links through the file-attachment handler. The exact display name and thread id are the cross-client fallback, and the successor thread id is authoritative.
 - Rollover transfers authority but does not archive the predecessor. Archive a predecessor only after app-server spawn-subtree reconciliation proves it has no active descendants. Top-level Lucia workers are outside that subtree.
 - On failure, the predecessor remains authoritative. Confirm that with `bootstrap.py`, then run `rollover.py --compact-current` as the asynchronous fallback and continue only after the compaction boundary. Never wait synchronously for a worker or successor.
