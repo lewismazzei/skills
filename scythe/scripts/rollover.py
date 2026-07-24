@@ -31,8 +31,17 @@ BOOTSTRAP = Path(__file__).with_name("bootstrap.py")
 DEFAULT_MODEL = "gpt-5.6-sol"
 DEFAULT_EFFORT = "xhigh"
 DEFAULT_SERVICE_TIER = "default"  # Standard service in Codex UI terminology.
-MAX_CHECKPOINT_BYTES = 48 * 1024
+MAX_CHECKPOINT_BYTES = 16 * 1024
 MAX_CHECKPOINT_AGE_SECONDS = 15 * 60
+CHECKPOINT_HEADINGS = (
+    "Objective",
+    "Frontier",
+    "Active lifecycle",
+    "Active exceptions",
+    "Exact next actions",
+    "Boundaries",
+    "Durable sources",
+)
 
 ADJECTIVES = (
     "amber", "brisk", "calm", "cedar", "clear", "clever", "copper", "crisp",
@@ -145,9 +154,27 @@ def validate_checkpoint(path: Path, max_bytes: int, max_age_seconds: int) -> dic
         raise RolloverError(
             f"stable checkpoint is stale ({age_seconds}s old); refresh it before rollover"
         )
-    for marker in ("<!-- Stable checkpoint:", "## Objective", "## Frontier", "## Active lifecycle"):
-        if marker not in content:
-            raise RolloverError(f"stable checkpoint is malformed: missing {marker}")
+    if "<!-- Stable checkpoint:" not in content:
+        raise RolloverError("stable checkpoint is malformed: missing stable checkpoint marker")
+    headings = re.findall(r"^## (.+?)\s*$", content, flags=re.MULTILINE)
+    if headings != list(CHECKPOINT_HEADINGS) or "[Verified, historical]" in content:
+        raise RolloverError(
+            "stable checkpoint does not satisfy the current-state contract"
+        )
+    action_match = re.search(
+        r"^## Exact next actions\s*$\n(.*?)(?=^## |\Z)",
+        content,
+        flags=re.MULTILINE | re.DOTALL,
+    )
+    action_numbers = (
+        [int(value) for value in re.findall(r"^(\d+)\.\s+", action_match.group(1), flags=re.MULTILINE)]
+        if action_match
+        else []
+    )
+    if not action_numbers or action_numbers != list(range(1, len(action_numbers) + 1)):
+        raise RolloverError(
+            "stable checkpoint does not satisfy the current-state contract"
+        )
     return {"path": str(path), "bytes": stat.st_size, "age_seconds": age_seconds}
 
 

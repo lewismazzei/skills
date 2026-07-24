@@ -8,6 +8,7 @@ import fcntl
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 import time
@@ -21,6 +22,19 @@ CHECKPOINT = SCYTHE_ROOT / ".codex" / "control-plane.md"
 WORKERS_ROOT = CODEX_HOME / "dispatch" / "workers"
 CONTROLLERS = CODEX_HOME / "scythe" / "controllers.json"
 TARGET_REPOS = {str(SCYTHE_ROOT), str(LUCIA_ROOT)}
+MAX_CHECKPOINT_BYTES = 16 * 1024
+CHECKPOINT_HEADINGS = (
+    "Objective",
+    "Frontier",
+    "Active lifecycle",
+    "Active exceptions",
+    "Exact next actions",
+    "Boundaries",
+    "Durable sources",
+)
+AUTHORITATIVE_CONTROLLER = re.compile(
+    r"Controller `[^`]+` is authoritative at thread `([^`]+)`"
+)
 
 
 def read_json_with_retry(path: Path) -> dict:
@@ -152,19 +166,96 @@ def controller_state() -> dict:
     return report
 
 
-def continuation_policy(controller: dict) -> dict:
+def checkpoint_state(
+    path: Path = CHECKPOINT,
+    controller: dict | None = None,
+    *,
+    max_bytes: int = MAX_CHECKPOINT_BYTES,
+) -> dict:
+    report = {
+        "path": str(path),
+        "exists": path.is_file(),
+        "max_bytes": max_bytes,
+        "status": "missing",
+        "violations": [],
+    }
+    if not path.is_file():
+        return report
+    try:
+        payload = path.read_bytes()
+        content = payload.decode("utf-8")
+        stat = path.stat()
+    except (OSError, UnicodeDecodeError) as error:
+        report["status"] = "malformed"
+        report["violations"] = [f"unreadable:{error}"]
+        return report
+    report["bytes"] = len(payload)
+    report["age_seconds"] = max(0, int(time.time() - stat.st_mtime))
+    violations: list[str] = []
+    if len(payload) > max_bytes:
+        violations.append("oversize")
+
+    headings = re.findall(r"^## (.+?)\s*$", content, flags=re.MULTILINE)
+    report["headings"] = headings
+    for heading in CHECKPOINT_HEADINGS:
+        if heading not in headings:
+            violations.append(f"missing-heading:{heading}")
+    for heading in headings:
+        if heading not in CHECKPOINT_HEADINGS:
+            violations.append(f"unexpected-heading:{heading}")
+    if "[Verified, historical]" in content:
+        violations.append("historical-content")
+
+    claims = AUTHORITATIVE_CONTROLLER.findall(content)
+    report["authoritative_controller_claims"] = claims
+    active = (controller or {}).get("active") or {}
+    expected_thread_id = active.get("thread_id")
+    if (controller or {}).get("authority") in {"active", "handoff-in-progress"}:
+        if len(claims) != 1:
+            violations.append(f"authoritative-controller-count:{len(claims)}")
+        elif expected_thread_id and claims[0] != expected_thread_id:
+            violations.append(f"authoritative-controller-mismatch:{claims[0]}")
+
+    action_match = re.search(
+        r"^## Exact next actions\s*$\n(.*?)(?=^## |\Z)",
+        content,
+        flags=re.MULTILINE | re.DOTALL,
+    )
+    action_numbers = (
+        [int(value) for value in re.findall(r"^(\d+)\.\s+", action_match.group(1), flags=re.MULTILINE)]
+        if action_match
+        else []
+    )
+    report["next_action_numbers"] = action_numbers
+    if not action_numbers:
+        violations.append("missing-next-actions")
+    elif action_numbers != list(range(1, len(action_numbers) + 1)):
+        violations.append("noncontiguous-next-actions")
+
+    report["violations"] = list(dict.fromkeys(violations))
+    if any(value.startswith(("missing-heading:", "unreadable:")) for value in violations):
+        report["status"] = "malformed"
+    else:
+        report["status"] = "stale" if violations else "healthy"
+    return report
+
+
+def continuation_policy(controller: dict, checkpoint: dict | None = None) -> dict:
     authority = controller.get("authority")
     if authority in {"active", "unregistered"}:
+        required = [
+            "execute-safe-immediate-actions",
+            "repair-recoverable-control-plane-faults",
+            "confirm-async-owner-is-advancing",
+            "persist-updated-frontier",
+        ]
+        if checkpoint is not None and checkpoint.get("status") != "healthy":
+            required.append("reconcile-checkpoint-hygiene")
         return {
             "mode": "act-then-report",
             "status_only_allowed": False,
             "repair_recoverable_control_plane_faults": True,
-            "required_before_final": [
-                "execute-safe-immediate-actions",
-                "repair-recoverable-control-plane-faults",
-                "confirm-async-owner-is-advancing",
-                "persist-updated-frontier",
-            ],
+            "required_before_final": required,
             "stop_only_when": [
                 "no-safe-synchronous-action-remains",
                 "lucia-owns-confirmed-asynchronous-next-action",
@@ -307,11 +398,12 @@ def service_state(unit: str) -> dict:
 def main() -> None:
     usage = latest_usage()
     controller = controller_state()
+    checkpoint = checkpoint_state(CHECKPOINT, controller)
     report = {
         "schema": 1,
-        "checkpoint": {"path": str(CHECKPOINT), "exists": CHECKPOINT.is_file()},
+        "checkpoint": checkpoint,
         "controller": controller,
-        "continuation": continuation_policy(controller),
+        "continuation": continuation_policy(controller, checkpoint),
         "roots": {"scythe": str(SCYTHE_ROOT), "lucia": str(LUCIA_ROOT)},
         "usage": usage,
         "pressure": pressure(usage),

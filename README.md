@@ -318,6 +318,7 @@ Typical uses:
 
 - Invoke explicitly with `$scythe`; Codex does not select it implicitly.
 - Use it in a fresh thread from any directory to load the current objective, frontier, worker exceptions, and exact next action without handoff confirmation.
+- Keep `control-plane.md` as a sub-16-KiB current-state index with a fixed section schema; bootstrap rejects historical diaries, stale controller claims, unexpected sections, and gapped next actions.
 - Enforce the bootstrap's machine-readable act-before-final gate: status-only completion is forbidden for an authoritative controller while safe immediate work or a recoverable control-plane fault remains.
 - Return control immediately when Lucia owns the asynchronous next action; wait or monitor only when the user explicitly requests it.
 - Read live Codex context and pace-aware weekly allowance pressure without exposing conversation content.
@@ -325,4 +326,4 @@ Typical uses:
 - Route clear workers to Luna and normal implementation workers to Terra.
 - Launch every delegated worker through Lucia's top-level background `codex exec` path; never use native controller-child subagents for Scythe work.
 - Detect late-period surplus and recommend one measured intelligence/effort increase for the next quota window.
-- At 150k input tokens, update the bounded stable checkpoint, create and name `scythe/controller/<pet-name>`, submit `$scythe`, return after turn acceptance, and provide a non-clickable desktop deep link plus the exact controller name/thread ID for cross-client chat search. Rollover does not archive the predecessor; archive only after proving no active spawned descendants. Use asynchronous compaction only as the fail-closed fallback.
+- At 150k input tokens, update the bootstrap-healthy current-state checkpoint, create and name `scythe/controller/<pet-name>`, submit `$scythe`, return after turn acceptance, and provide a non-clickable desktop deep link plus the exact controller name/thread ID for cross-client chat search. Rollover does not archive the predecessor; archive only after proving no active spawned descendants. Use asynchronous compaction only as the fail-closed fallback.

@@ -50,7 +50,11 @@ def write_checkpoint(path: Path) -> None:
     path.write_text(
         "# Checkpoint\n\n<!-- Stable checkpoint: update in place. -->\n\n"
         "## Objective\n\nShip.\n\n## Frontier\n\nRollover.\n\n"
-        "## Active lifecycle\n\nLucia owns workers.\n",
+        "## Active lifecycle\n\nLucia owns workers.\n\n"
+        "## Active exceptions\n\n- None.\n\n"
+        "## Exact next actions\n\n1. Roll over.\n\n"
+        "## Boundaries\n\n- Preserve user data.\n\n"
+        "## Durable sources\n\n- Git and Lucia records.\n",
         encoding="utf-8",
     )
 
@@ -199,6 +203,18 @@ class RolloverTests(unittest.TestCase):
             old = dt.datetime.now().timestamp() - 901
             os.utime(path, (old, old))
             with self.assertRaisesRegex(rollover.RolloverError, "stale"):
+                rollover.validate_checkpoint(path, rollover.MAX_CHECKPOINT_BYTES, 900)
+
+    def test_historical_checkpoint_fails_before_thread_creation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "checkpoint.md"
+            write_checkpoint(path)
+            path.write_text(
+                path.read_text(encoding="utf-8")
+                + "\n## Completed worker diary\n\n- [Verified, historical] old work.\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(rollover.RolloverError, "current-state contract"):
                 rollover.validate_checkpoint(path, rollover.MAX_CHECKPOINT_BYTES, 900)
 
     def test_compaction_fallback_is_asynchronous(self) -> None:

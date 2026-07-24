@@ -149,6 +149,81 @@ class ControllerStateTests(unittest.TestCase):
         self.assertEqual(report["pending"]["thread_id"], "thread-new")
 
 
+class CheckpointHygieneTests(unittest.TestCase):
+    def write_checkpoint(self, path: Path, *, lifecycle: str, actions: str, extra: str = "") -> None:
+        path.write_text(
+            "# Scythe Control Plane Checkpoint\n\n"
+            "<!-- Stable checkpoint: update this file in place. -->\n\n"
+            "## Objective\n\nShip.\n\n"
+            "## Frontier\n\nCurrent work only.\n\n"
+            f"{extra}"
+            "## Active lifecycle\n\n"
+            f"{lifecycle}\n\n"
+            "## Active exceptions\n\n- None.\n\n"
+            "## Exact next actions\n\n"
+            f"{actions}\n\n"
+            "## Boundaries\n\n- Preserve user data.\n\n"
+            "## Durable sources\n\n- Git and Lucia records.\n",
+            encoding="utf-8",
+        )
+
+    def test_compact_current_state_checkpoint_is_healthy(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "control-plane.md"
+            self.write_checkpoint(
+                path,
+                lifecycle="Controller `scythe/controller/clear-maple` is authoritative at thread `thread-current`.",
+                actions="1. Do the next thing.\n2. Verify it.",
+            )
+            report = bootstrap.checkpoint_state(
+                path,
+                {"authority": "active", "active": {"thread_id": "thread-current"}},
+            )
+
+        self.assertEqual(report["status"], "healthy")
+        self.assertEqual(report["violations"], [])
+
+    def test_stale_history_controller_and_gapped_actions_are_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "control-plane.md"
+            self.write_checkpoint(
+                path,
+                lifecycle=(
+                    "Controller `scythe/controller/old` is authoritative at thread `thread-old`.\n"
+                    "- [Verified, historical] old worker narrative."
+                ),
+                actions="1. First.\n3. Third.",
+                extra="## Completed worker diary\n\n- old details\n\n",
+            )
+            report = bootstrap.checkpoint_state(
+                path,
+                {"authority": "active", "active": {"thread_id": "thread-current"}},
+            )
+
+        self.assertEqual(report["status"], "stale")
+        self.assertIn("historical-content", report["violations"])
+        self.assertIn("unexpected-heading:Completed worker diary", report["violations"])
+        self.assertIn("authoritative-controller-mismatch:thread-old", report["violations"])
+        self.assertIn("noncontiguous-next-actions", report["violations"])
+
+    def test_oversize_checkpoint_is_rejected_before_rollover_limit(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "control-plane.md"
+            self.write_checkpoint(
+                path,
+                lifecycle="Controller `scythe/controller/clear-maple` is authoritative at thread `thread-current`.",
+                actions="1. Do the next thing.",
+            )
+            report = bootstrap.checkpoint_state(
+                path,
+                {"authority": "active", "active": {"thread_id": "thread-current"}},
+                max_bytes=128,
+            )
+
+        self.assertEqual(report["status"], "stale")
+        self.assertIn("oversize", report["violations"])
+
+
 class ContinuationPolicyTests(unittest.TestCase):
     def test_active_controller_cannot_finish_with_status_only_when_action_remains(self) -> None:
         policy = bootstrap.continuation_policy({"authority": "active"})
@@ -171,6 +246,14 @@ class ContinuationPolicyTests(unittest.TestCase):
         self.assertEqual(policy["mode"], "report-authoritative-controller")
         self.assertTrue(policy["status_only_allowed"])
         self.assertFalse(policy["repair_recoverable_control_plane_faults"])
+
+    def test_unhealthy_checkpoint_is_an_explicit_final_response_gate(self) -> None:
+        policy = bootstrap.continuation_policy(
+            {"authority": "active"},
+            {"status": "stale"},
+        )
+
+        self.assertIn("reconcile-checkpoint-hygiene", policy["required_before_final"])
 
 
 if __name__ == "__main__":
