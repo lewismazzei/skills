@@ -149,5 +149,29 @@ class ControllerStateTests(unittest.TestCase):
         self.assertEqual(report["pending"]["thread_id"], "thread-new")
 
 
+class ContinuationPolicyTests(unittest.TestCase):
+    def test_active_controller_cannot_finish_with_status_only_when_action_remains(self) -> None:
+        policy = bootstrap.continuation_policy({"authority": "active"})
+
+        self.assertEqual(policy["mode"], "act-then-report")
+        self.assertFalse(policy["status_only_allowed"])
+        self.assertTrue(policy["repair_recoverable_control_plane_faults"])
+        self.assertIn("execute-safe-immediate-actions", policy["required_before_final"])
+        self.assertIn("confirm-async-owner-is-advancing", policy["required_before_final"])
+
+    def test_unregistered_controller_uses_the_same_act_before_final_gate(self) -> None:
+        policy = bootstrap.continuation_policy({"authority": "unregistered"})
+
+        self.assertEqual(policy["mode"], "act-then-report")
+        self.assertFalse(policy["status_only_allowed"])
+
+    def test_non_authoritative_controller_reports_owner_without_acting(self) -> None:
+        policy = bootstrap.continuation_policy({"authority": "superseded"})
+
+        self.assertEqual(policy["mode"], "report-authoritative-controller")
+        self.assertTrue(policy["status_only_allowed"])
+        self.assertFalse(policy["repair_recoverable_control_plane_faults"])
+
+
 if __name__ == "__main__":
     unittest.main()

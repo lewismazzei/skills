@@ -152,6 +152,34 @@ def controller_state() -> dict:
     return report
 
 
+def continuation_policy(controller: dict) -> dict:
+    authority = controller.get("authority")
+    if authority in {"active", "unregistered"}:
+        return {
+            "mode": "act-then-report",
+            "status_only_allowed": False,
+            "repair_recoverable_control_plane_faults": True,
+            "required_before_final": [
+                "execute-safe-immediate-actions",
+                "repair-recoverable-control-plane-faults",
+                "confirm-async-owner-is-advancing",
+                "persist-updated-frontier",
+            ],
+            "stop_only_when": [
+                "no-safe-synchronous-action-remains",
+                "lucia-owns-confirmed-asynchronous-next-action",
+                "authority-or-explicit-approval-boundary",
+            ],
+        }
+    return {
+        "mode": "report-authoritative-controller",
+        "status_only_allowed": True,
+        "repair_recoverable_control_plane_faults": False,
+        "required_before_final": ["report-active-controller"],
+        "stop_only_when": ["authority-boundary"],
+    }
+
+
 def candidate_sessions() -> list[Path]:
     sessions = CODEX_HOME / "sessions"
     if not sessions.is_dir():
@@ -278,10 +306,12 @@ def service_state(unit: str) -> dict:
 
 def main() -> None:
     usage = latest_usage()
+    controller = controller_state()
     report = {
         "schema": 1,
         "checkpoint": {"path": str(CHECKPOINT), "exists": CHECKPOINT.is_file()},
-        "controller": controller_state(),
+        "controller": controller,
+        "continuation": continuation_policy(controller),
         "roots": {"scythe": str(SCYTHE_ROOT), "lucia": str(LUCIA_ROOT)},
         "usage": usage,
         "pressure": pressure(usage),

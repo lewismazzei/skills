@@ -318,6 +318,7 @@ Typical uses:
 
 - Invoke explicitly with `$scythe`; Codex does not select it implicitly.
 - Use it in a fresh thread from any directory to load the current objective, frontier, worker exceptions, and exact next action without handoff confirmation.
+- Enforce the bootstrap's machine-readable act-before-final gate: status-only completion is forbidden for an authoritative controller while safe immediate work or a recoverable control-plane fault remains.
 - Return control immediately when Lucia owns the asynchronous next action; wait or monitor only when the user explicitly requests it.
 - Read live Codex context and pace-aware weekly allowance pressure without exposing conversation content.
 - Run control-plane threads on Sol/medium by default, raise them to Sol/high for difficult architecture or lifecycle decisions, and use xhigh only after measured lower-effort failure or explicit instruction.

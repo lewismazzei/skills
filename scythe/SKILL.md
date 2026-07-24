@@ -17,6 +17,16 @@ description: Bootstrap and operate Lewis's Scythe control plane from any Codex w
 
 If the checkpoint is missing or malformed, reconstruct it from durable Scythe/Lucia sources and canonical runtime records.
 
+## Act-before-final gate
+
+- Treat the bootstrap `continuation` object as a final-response gate. For an `active` or `unregistered` controller, `status_only_allowed` is false.
+- A status request does not make the control plane read-only. Before answering, enumerate the checkpoint's exact next actions and execute every safe immediate non-overlapping action available in the foreground.
+- Do not report a recoverable control-plane fault as the terminal outcome. Diagnose and repair Scythe/Lucia orchestration faults directly, then resume the product frontier.
+- A worker marked `blocked`, a stale verifier, a dirty-source guard, an eligibility mismatch, or a stopped watcher is an incident to reconcile, not automatically a reason to stop.
+- Before the final response, satisfy the machine-readable `required_before_final` list: execute safe immediate actions, repair recoverable control-plane faults, confirm any asynchronous owner is genuinely advancing, and persist the updated frontier.
+- Stop only at one of the bootstrap `stop_only_when` conditions: no safe synchronous action remains; Lucia owns a confirmed asynchronous next action; or authority, approval, credential, destructive, or product-direction boundaries prevent continuation.
+- If the user explicitly asks for a read-only audit or forbids changes, preserve that narrower authority and report what action would otherwise have been taken.
+
 ## Worker launch invariant
 
 - Initiate every delegated worker through Lucia's background `codex exec` path: `node /home/lewis/projects/lucia/lucia.mjs spawn --background --task ... --owner ... --avoid ...`.
