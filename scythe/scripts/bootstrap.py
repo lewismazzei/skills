@@ -3,14 +3,13 @@
 
 from __future__ import annotations
 
+import argparse
 import datetime as dt
-import fcntl
 import json
 import os
 from pathlib import Path
 import re
 import subprocess
-import tempfile
 import time
 
 
@@ -81,62 +80,15 @@ def worker_states() -> list[dict]:
     return workers
 
 
-def atomic_write_json(path: Path, value: dict) -> None:
-    payload = json.dumps(value, indent=2, sort_keys=True) + "\n"
-    temp_path = None
-    try:
-        with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as handle:
-            temp_path = Path(handle.name)
-            handle.write(payload)
-            handle.flush()
-            os.fsync(handle.fileno())
-        os.chmod(temp_path, 0o600)
-        os.replace(temp_path, path)
-    finally:
-        if temp_path is not None:
-            temp_path.unlink(missing_ok=True)
-
-
-def promote_pending_controller(registry: dict, project: dict, active: dict, pending: dict) -> dict:
-    activated_at = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-    successor = dict(pending)
-    successor.pop("worker_snapshot", None)
-    successor["state"] = "active"
-    successor["activated_at"] = activated_at
-    successor["source"] = "successor-self-promotion"
-    predecessor = dict(active)
-    predecessor["state"] = "retired"
-    predecessor["retired_at"] = activated_at
-    predecessor["successor_thread_id"] = successor.get("thread_id")
-    project.setdefault("history", []).append(predecessor)
-    project["active"] = successor
-    project.pop("pending", None)
-    project["updated_at"] = activated_at
-    atomic_write_json(CONTROLLERS, registry)
-    return successor
-
-
 def controller_state() -> dict:
     thread_id = os.environ.get("CODEX_THREAD_ID", "").strip()
     report = {"registry": str(CONTROLLERS), "thread_id": thread_id or None, "authority": "unregistered"}
     if not CONTROLLERS.is_file():
         return report
-    lock_path = CONTROLLERS.with_suffix(CONTROLLERS.suffix + ".lock")
-    with lock_path.open("a+", encoding="utf-8") as lock_handle:
-        fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX)
-        registry = read_json_with_retry(CONTROLLERS)
-        project = ((registry.get("projects") or {}).get("scythe") or {})
-        active = project.get("active") if isinstance(project, dict) else None
-        pending = project.get("pending") if isinstance(project, dict) else None
-        if (
-            thread_id
-            and isinstance(active, dict)
-            and isinstance(pending, dict)
-            and pending.get("thread_id") == thread_id
-            and pending.get("state") == "starting"
-        ):
-            active = promote_pending_controller(registry, project, active, pending)
-            pending = None
+    registry = read_json_with_retry(CONTROLLERS)
+    project = ((registry.get("projects") or {}).get("scythe") or {})
+    active = project.get("active") if isinstance(project, dict) else None
+    pending = project.get("pending") if isinstance(project, dict) else None
     if not isinstance(active, dict):
         report["authority"] = "invalid-registry"
         return report
@@ -240,7 +192,21 @@ def checkpoint_state(
     return report
 
 
-def continuation_policy(controller: dict, checkpoint: dict | None = None) -> dict:
+def continuation_policy(
+    controller: dict,
+    checkpoint: dict | None = None,
+    *,
+    request: str = "continue",
+) -> dict:
+    if request == "status":
+        return {
+            "mode": "read-only-status",
+            "status_only_allowed": True,
+            "mutations_allowed": False,
+            "repair_recoverable_control_plane_faults": False,
+            "required_before_final": ["report-observed-state"],
+            "stop_only_when": ["observed-state-reported"],
+        }
     authority = controller.get("authority")
     if authority in {"active", "unregistered"}:
         required = [
@@ -254,6 +220,7 @@ def continuation_policy(controller: dict, checkpoint: dict | None = None) -> dic
         return {
             "mode": "act-then-report",
             "status_only_allowed": False,
+            "mutations_allowed": True,
             "repair_recoverable_control_plane_faults": True,
             "required_before_final": required,
             "stop_only_when": [
@@ -265,6 +232,7 @@ def continuation_policy(controller: dict, checkpoint: dict | None = None) -> dic
     return {
         "mode": "report-authoritative-controller",
         "status_only_allowed": True,
+        "mutations_allowed": False,
         "repair_recoverable_control_plane_faults": False,
         "required_before_final": ["report-active-controller"],
         "stop_only_when": ["authority-boundary"],
@@ -327,7 +295,7 @@ def pressure(usage: dict) -> dict:
     reset_text = usage.get("weekly_resets_at")
     context_state = "unknown"
     if isinstance(context, (int, float)):
-        context_state = "rollover" if context >= 150_000 else "watch" if context >= 125_000 else "normal"
+        context_state = "native-compaction" if context >= 150_000 else "watch" if context >= 125_000 else "normal"
     elapsed_percent = None
     pace_ratio = None
     projected_percent = None
@@ -370,7 +338,9 @@ def pressure(usage: dict) -> dict:
         "weekly_projected_percent_at_reset": round(projected_percent, 1) if projected_percent is not None else None,
         "weekly_surplus_percent_points": round(surplus_points, 1) if surplus_points is not None else None,
         "next_period_adjustment": next_period_adjustment,
-        "rollover_recommended": context_state == "rollover",
+        "rollover_recommended": False,
+        "native_compaction_expected": context_state == "native-compaction",
+        "controller_thread_policy": "permanent",
         "discretionary_model_work_allowed": weekly_state != "reserve",
     }
 
@@ -395,7 +365,19 @@ def service_state(unit: str) -> dict:
     }
 
 
+def parser() -> argparse.ArgumentParser:
+    value = argparse.ArgumentParser(description=__doc__)
+    value.add_argument(
+        "--request",
+        choices=("continue", "status"),
+        default="continue",
+        help="Select an acting continuation or a mutation-free status observation.",
+    )
+    return value
+
+
 def main() -> None:
+    args = parser().parse_args()
     usage = latest_usage()
     controller = controller_state()
     checkpoint = checkpoint_state(CHECKPOINT, controller)
@@ -403,7 +385,7 @@ def main() -> None:
         "schema": 1,
         "checkpoint": checkpoint,
         "controller": controller,
-        "continuation": continuation_policy(controller, checkpoint),
+        "continuation": continuation_policy(controller, checkpoint, request=args.request),
         "roots": {"scythe": str(SCYTHE_ROOT), "lucia": str(LUCIA_ROOT)},
         "usage": usage,
         "pressure": pressure(usage),

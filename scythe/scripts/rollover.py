@@ -588,29 +588,15 @@ def main() -> int:
     args = parser().parse_args()
     current_thread_id = os.environ.get("CODEX_THREAD_ID", "").strip()
     try:
-        if args.compact_current:
-            report = request_compaction(
-                current_thread_id=current_thread_id,
-                socket_path=args.socket.resolve(),
-            )
-            print(json.dumps(report, indent=2, sort_keys=True))
-            return 0
-        report = perform_rollover(
-            project=args.project,
-            cwd=args.cwd.resolve(),
-            checkpoint=args.checkpoint.resolve(),
-            registry_path=args.registry.resolve(),
-            socket_path=args.socket.resolve(),
+        report = request_compaction(
             current_thread_id=current_thread_id,
-            model=args.model,
-            effort=args.effort,
-            service_tier=args.service_tier,
-            max_checkpoint_bytes=args.max_checkpoint_bytes,
-            max_checkpoint_age_seconds=args.max_checkpoint_age_seconds,
+            socket_path=args.socket.resolve(),
         )
     except RolloverError as error:
         print(json.dumps({"status": "failed", "error": str(error)}, sort_keys=True))
         return 1
+    report["controller_thread_policy"] = "permanent"
+    report["successor_created"] = False
     print(json.dumps(report, indent=2, sort_keys=True))
     return 0
 

@@ -31,11 +31,14 @@ def usage(*, context: int, used: float, elapsed_fraction: float) -> dict:
 
 
 class PressureTests(unittest.TestCase):
-    def test_context_watch_and_rollover_thresholds(self) -> None:
+    def test_context_watch_and_native_compaction_thresholds(self) -> None:
         self.assertEqual(bootstrap.pressure(usage(context=124_999, used=5, elapsed_fraction=0.05))["context"], "normal")
         self.assertEqual(bootstrap.pressure(usage(context=125_000, used=5, elapsed_fraction=0.05))["context"], "watch")
         self.assertEqual(bootstrap.pressure(usage(context=149_999, used=5, elapsed_fraction=0.05))["context"], "watch")
-        self.assertEqual(bootstrap.pressure(usage(context=150_000, used=5, elapsed_fraction=0.05))["context"], "rollover")
+        report = bootstrap.pressure(usage(context=150_000, used=5, elapsed_fraction=0.05))
+        self.assertEqual(report["context"], "native-compaction")
+        self.assertTrue(report["native_compaction_expected"])
+        self.assertFalse(report["rollover_recommended"])
 
     def test_high_usage_is_pace_aware_not_an_absolute_stop(self) -> None:
         report = bootstrap.pressure(usage(context=10_000, used=80, elapsed_fraction=0.06))
@@ -97,7 +100,7 @@ class ControllerStateTests(unittest.TestCase):
         self.assertEqual(report["authority"], "superseded")
         self.assertEqual(report["active"]["thread_id"], "thread-new")
 
-    def test_executing_pending_successor_self_promotes_after_lock_release(self) -> None:
+    def test_pending_successor_is_observed_without_mutating_registry(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             registry = Path(directory) / "controllers.json"
             registry.write_text(json.dumps({
@@ -115,16 +118,16 @@ class ControllerStateTests(unittest.TestCase):
                     "history": [],
                 }},
             }), encoding="utf-8")
+            before = registry.read_bytes()
             with mock.patch.object(bootstrap, "CONTROLLERS", registry), mock.patch.dict(
                 os.environ, {"CODEX_THREAD_ID": "thread-new"}
             ):
                 report = bootstrap.controller_state()
-            persisted = json.loads(registry.read_text(encoding="utf-8"))["projects"]["scythe"]
+            after = registry.read_bytes()
 
-        self.assertEqual(report["authority"], "active")
-        self.assertEqual(persisted["active"]["thread_id"], "thread-new")
-        self.assertEqual(persisted["history"][0]["thread_id"], "thread-old")
-        self.assertNotIn("pending", persisted)
+        self.assertEqual(report["authority"], "pending")
+        self.assertEqual(report["active"]["thread_id"], "thread-old")
+        self.assertEqual(before, after)
 
     def test_predecessor_does_not_overlap_an_unresolved_starting_successor(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -254,6 +257,18 @@ class ContinuationPolicyTests(unittest.TestCase):
         )
 
         self.assertIn("reconcile-checkpoint-hygiene", policy["required_before_final"])
+
+    def test_status_request_is_a_pure_read_only_contract(self) -> None:
+        policy = bootstrap.continuation_policy(
+            {"authority": "active"},
+            {"status": "stale"},
+            request="status",
+        )
+
+        self.assertEqual(policy["mode"], "read-only-status")
+        self.assertTrue(policy["status_only_allowed"])
+        self.assertFalse(policy["mutations_allowed"])
+        self.assertEqual(policy["required_before_final"], ["report-observed-state"])
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import sys
 import tempfile
 import unittest
 from unittest import mock
@@ -226,6 +227,22 @@ class RolloverTests(unittest.TestCase):
         )
         self.assertEqual(client.calls, [("thread/compact/start", {"threadId": "thread-old"})])
         self.assertEqual(report, {"status": "accepted", "thread_id": "thread-old"})
+
+    def test_cli_defaults_to_current_thread_compaction_and_never_creates_a_successor(self) -> None:
+        with mock.patch.dict(os.environ, {"CODEX_THREAD_ID": "thread-old"}), mock.patch.object(
+            sys, "argv", ["rollover.py"]
+        ), mock.patch.object(
+            rollover,
+            "request_compaction",
+            return_value={"status": "accepted", "thread_id": "thread-old"},
+        ) as compact, mock.patch.object(
+            rollover,
+            "perform_rollover",
+            side_effect=AssertionError("CLI must not create a successor"),
+        ):
+            self.assertEqual(rollover.main(), 0)
+
+        compact.assert_called_once()
 
 
 if __name__ == "__main__":
