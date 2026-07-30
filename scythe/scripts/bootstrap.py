@@ -22,6 +22,8 @@ WORKERS_ROOT = CODEX_HOME / "dispatch" / "workers"
 CONTROLLERS = CODEX_HOME / "scythe" / "controllers.json"
 TARGET_REPOS = {str(SCYTHE_ROOT), str(LUCIA_ROOT)}
 MAX_CHECKPOINT_BYTES = 16 * 1024
+WEEKLY_STARTUP_BURST_PERCENT = 5.0
+WEEKLY_END_RESERVE_PERCENT = 5.0
 CHECKPOINT_HEADINGS = (
     "Objective",
     "Frontier",
@@ -328,8 +330,24 @@ def pressure(usage: dict) -> dict:
         else:
             weekly_state = "normal"
     surplus_points = None
+    pacing_limit = None
+    pacing_remaining = None
+    pacing_guard = "unknown"
     if elapsed_percent is not None and isinstance(weekly, (int, float)):
         surplus_points = max(0.0, elapsed_percent - float(weekly))
+        pacing_limit = min(
+            100.0 - WEEKLY_END_RESERVE_PERCENT,
+            WEEKLY_STARTUP_BURST_PERCENT
+            + elapsed_percent
+            * (
+                100.0
+                - WEEKLY_STARTUP_BURST_PERCENT
+                - WEEKLY_END_RESERVE_PERCENT
+            )
+            / 100.0,
+        )
+        pacing_remaining = max(0.0, pacing_limit - float(weekly))
+        pacing_guard = "open" if float(weekly) <= pacing_limit and float(weekly) < 95 else "closed"
     return {
         "context": context_state,
         "weekly": weekly_state,
@@ -337,11 +355,15 @@ def pressure(usage: dict) -> dict:
         "weekly_pace_ratio": round(pace_ratio, 2) if pace_ratio is not None else None,
         "weekly_projected_percent_at_reset": round(projected_percent, 1) if projected_percent is not None else None,
         "weekly_surplus_percent_points": round(surplus_points, 1) if surplus_points is not None else None,
+        "weekly_pacing_limit_percent": round(pacing_limit, 1) if pacing_limit is not None else None,
+        "weekly_pacing_remaining_percent": round(pacing_remaining, 1) if pacing_remaining is not None else None,
+        "weekly_pacing_guard": pacing_guard,
+        "manual_reset_assumed": False,
         "next_period_adjustment": next_period_adjustment,
         "rollover_recommended": False,
         "native_compaction_expected": context_state == "native-compaction",
         "controller_thread_policy": "permanent",
-        "discretionary_model_work_allowed": weekly_state != "reserve",
+        "discretionary_model_work_allowed": pacing_guard == "open",
     }
 
 

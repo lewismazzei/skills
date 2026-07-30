@@ -40,16 +40,30 @@ class PressureTests(unittest.TestCase):
         self.assertTrue(report["native_compaction_expected"])
         self.assertFalse(report["rollover_recommended"])
 
-    def test_high_usage_is_pace_aware_not_an_absolute_stop(self) -> None:
+    def test_early_high_usage_closes_the_discretionary_worker_gate(self) -> None:
         report = bootstrap.pressure(usage(context=10_000, used=80, elapsed_fraction=0.06))
         self.assertEqual(report["weekly"], "high-burn")
-        self.assertTrue(report["discretionary_model_work_allowed"])
+        self.assertEqual(report["weekly_pacing_guard"], "closed")
+        self.assertFalse(report["discretionary_model_work_allowed"])
         self.assertGreater(report["weekly_pace_ratio"], 13)
 
     def test_reserve_pauses_only_discretionary_model_work(self) -> None:
         report = bootstrap.pressure(usage(context=10_000, used=95, elapsed_fraction=0.95))
         self.assertEqual(report["weekly"], "reserve")
+        self.assertEqual(report["weekly_pacing_guard"], "closed")
         self.assertFalse(report["discretionary_model_work_allowed"])
+
+    def test_pacing_guard_allows_a_small_startup_burst_and_preserves_end_reserve(self) -> None:
+        startup = bootstrap.pressure(usage(context=10_000, used=5, elapsed_fraction=0.001))
+        self.assertEqual(startup["weekly_pacing_guard"], "open")
+        self.assertGreaterEqual(startup["weekly_pacing_limit_percent"], 5)
+        self.assertTrue(startup["discretionary_model_work_allowed"])
+
+        mid_window = bootstrap.pressure(usage(context=10_000, used=51, elapsed_fraction=0.5))
+        self.assertEqual(mid_window["weekly_pacing_limit_percent"], 50)
+        self.assertEqual(mid_window["weekly_pacing_guard"], "closed")
+        self.assertFalse(mid_window["discretionary_model_work_allowed"])
+        self.assertFalse(mid_window["manual_reset_assumed"])
 
     def test_late_surplus_recommends_one_step_increase_next_period(self) -> None:
         report = bootstrap.pressure(usage(context=10_000, used=40, elapsed_fraction=0.9))

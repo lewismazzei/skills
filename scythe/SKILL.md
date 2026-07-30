@@ -50,6 +50,8 @@ If the checkpoint is missing or malformed, reconstruct it from durable Scythe/Lu
 ## Worker launch invariant
 
 - Initiate every delegated worker through Lucia's background `codex exec` path: `node /home/lewis/projects/lucia/lucia.mjs spawn --background --task ... --owner ... --avoid ...`.
+- Before each model-backed spawn, recovery, or review, rerun bootstrap. Require `pressure.weekly_pacing_guard == "open"` and `pressure.discretionary_model_work_allowed == true` for discretionary work. When the guard is closed, start only necessary recovery or customer-facing release work at the lowest proven tier.
+- Keep at most one active model-backed worker. Start the next worker only after the current worker reaches a terminal handoff state.
 - Never use native `spawn_agent`, collaboration subagents, or another controller-child thread mechanism for Scythe work. Worker threads must be independent top-level threads so controller rollover and later archival cannot interrupt them.
 - After launch, treat the persisted Codex thread id as authoritative. When app-server relationship metadata is available, require `parentThreadId` to be null. A non-null parent is a lifecycle violation: stop dispatching further work, preserve the worker state/worktree, and route repair through Lucia rather than archiving the controller.
 - Controller-local reconciliation, deterministic inspection, checkpoint maintenance, and routing decisions are not delegated worker work and remain in the foreground thread.
@@ -70,6 +72,7 @@ Run deterministic checks before model calls. Allow one meaningful recovery attem
 ## Circuit breakers
 
 - Context: `watch` at 125,000 input tokens; expect native compaction at 150,000 while retaining the same authoritative thread.
+- Weekly pacing guard: allow a 5 percentage-point startup burst, then grow the spend limit with 90% of elapsed weekly time, capped at 95%. This preserves a 5-point end reserve. Never assume that a manual reset is available.
 - Weekly allowance: compare usage consumed with elapsed share of the seven-day window. Treat above 1.25x sustainable pace as `elevated`, above 2x as `high burn`, and 95% absolute usage as `reserve`.
 - In the final quarter of a window, treat pace below 0.75x as `surplus`. Prefer higher intelligence/effort on worthwhile queued work and carry a one-step increase into the next period; never generate filler work to spend quota.
 - `High burn` lowers defaults and removes redundant calls but does not block useful approved work. Under `reserve`, pause discretionary model-backed work while allowing necessary recovery and customer-facing work at the lowest proven tier.

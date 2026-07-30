@@ -323,6 +323,7 @@ Typical uses:
 - Enforce the bootstrap's machine-readable act-before-final gate only for `$scythe`, `continue`, or another acting request while safe immediate work or a recoverable control-plane fault remains.
 - Return control immediately when Lucia owns the asynchronous next action; wait or monitor only when the user explicitly requests it.
 - Read live Codex context and pace-aware weekly allowance pressure without exposing conversation content.
+- Enforce a machine-readable weekly pacing gate before new model-backed work: allow a 5-point startup burst, preserve a 5-point end reserve, keep one active model worker, and never assume a manual reset.
 - Run Scythe control-plane threads on Sol/xhigh by explicit operator choice while continuing to route workers at the lowest effort that meets their evidence bar.
 - Route clear workers to Luna and normal implementation workers to Terra.
 - Launch every delegated worker through Lucia's top-level background `codex exec` path; never use native controller-child subagents for Scythe work.
