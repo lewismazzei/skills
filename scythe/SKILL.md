@@ -1,13 +1,13 @@
 ---
 name: scythe
-description: Bootstrap and operate Lewis's Scythe control plane from any Codex working directory using its durable checkpoint, live Lucia worker state, and Codex usage pressure.
+description: Bootstrap and operate Lewis's Scythe control plane from any Codex working directory using its durable checkpoint, live Lucia worker state, and Codex usage pressure. Use for $scythe and for the exact keyword "nudge" in a Scythe ingress or controller thread.
 ---
 
 # Scythe Control Plane
 
 ## Bootstrap
 
-1. Classify the operator request before doing anything else. For an ordinary `status` request, run `python3 /home/lewis/.agents/skills/scythe/scripts/bootstrap.py --request status`. For `$scythe`, `continue`, or another acting request, run the same command with `--request continue`.
+1. Classify the operator request before doing anything else. For an ordinary `status` request, run `python3 /home/lewis/.agents/skills/scythe/scripts/bootstrap.py --request status`. For `$scythe`, exact `nudge`, `continue`, or another acting request, run the same command with `--request continue`.
 2. Read `/home/lewis/projects/scythe/.codex/control-plane.md` completely as the durable control-plane checkpoint.
 3. Check `checkpoint.status`. If it is not `healthy`, reconcile the checkpoint to the current-state contract below before relying on it or giving a final response.
 4. Treat the script's canonical controller, worker, watcher, and usage state as newer than checkpoint prose. Preserve the objective, boundaries, and real operator frontier while removing superseded claims.
@@ -22,8 +22,15 @@ If the checkpoint is missing or malformed, reconstruct it from durable Scythe/Lu
 
 - An ordinary `status`, “what is happening?”, or equivalent observation request is a strict read-only operation. Read the bootstrap report, checkpoint, Git refs, release manifests, worker records, and service state; then report them.
 - During read-only status, do not edit files, update the checkpoint or controller registry, enqueue ingress, dispatch or recover workers, run Lucia with `--apply`, restart services, trigger a release, push, or request compaction.
-- Surface recoverable faults and the exact next acting operation, but leave both untouched. Only `$scythe`, `continue`, or an explicit change/recovery request authorizes the act-before-final workflow.
+- Surface recoverable faults and the exact next acting operation, but leave both untouched. Only `$scythe`, exact `nudge`, `continue`, or an explicit change/recovery request authorizes the act-before-final workflow.
 - The bootstrap itself is read-only for every request. Its `continuation.mutations_allowed` field is the machine-readable authority boundary.
+
+## Nudge keyword
+
+- Treat an operator message whose command is exact `nudge` in a Scythe ingress or controller thread as an acting request.
+- `nudge` means: inspect the canonical live state, execute each safe immediate non-overlapping action that is needed, repair recoverable control-plane faults, persist the current frontier, and explain why action was needed.
+- Return control when no safe synchronous action remains or Lucia owns a confirmed asynchronous next action.
+- `nudge` does not mean monitor or wait, bypass authority or pacing gates, create a goal, start duplicate work, or make ordinary `status` action-bearing.
 
 ## Checkpoint contract
 
@@ -38,7 +45,7 @@ If the checkpoint is missing or malformed, reconstruct it from durable Scythe/Lu
 
 ## Continue act-before-final gate
 
-- Apply this section only to `$scythe`, `continue`, or another acting request. Treat the bootstrap `continuation` object as a final-response gate. For an `active` or `unregistered` controller in acting mode, `status_only_allowed` is false.
+- Apply this section only to `$scythe`, exact `nudge`, `continue`, or another acting request. Treat the bootstrap `continuation` object as a final-response gate. For an `active` or `unregistered` controller in acting mode, `status_only_allowed` is false.
 - Before answering an acting request, enumerate the checkpoint's exact next actions and execute every safe immediate non-overlapping action available in the foreground.
 - Do not report a recoverable control-plane fault as the terminal outcome. Diagnose and repair Scythe/Lucia orchestration faults directly, then resume the product frontier.
 - A worker marked `blocked`, a stale verifier, a dirty-source guard, an eligibility mismatch, or a stopped watcher is an incident to reconcile, not automatically a reason to stop.

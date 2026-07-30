@@ -316,11 +316,12 @@ npx skills add https://github.com/lewismazzei/skills/tree/main/scythe -g -a code
 
 Typical uses:
 
-- Invoke explicitly with `$scythe`; Codex does not select it implicitly.
+- Invoke explicitly with `$scythe`, or send exact `nudge` in a Scythe ingress or controller thread to inspect the live state, take each needed safe immediate action, persist the frontier, and explain why action was needed.
+- Keep ordinary `status` strictly read-only. `nudge` is the short acting command; it does not wait, bypass pacing or authority gates, create a goal, or start duplicate work.
 - Use it in a fresh thread from any directory to load the current objective, frontier, worker exceptions, and exact next action without handoff confirmation.
 - Keep `control-plane.md` as a sub-16-KiB current-state index with a fixed section schema; bootstrap rejects historical diaries, stale controller claims, unexpected sections, and gapped next actions.
 - Make ordinary `status` a machine-readable, mutation-free observation: it never edits checkpoints or registries, dispatches or recovers workers, enqueues ingress, restarts services, triggers releases, pushes, or requests compaction.
-- Enforce the bootstrap's machine-readable act-before-final gate only for `$scythe`, `continue`, or another acting request while safe immediate work or a recoverable control-plane fault remains.
+- Enforce the bootstrap's machine-readable act-before-final gate only for `$scythe`, exact `nudge`, `continue`, or another acting request while safe immediate work or a recoverable control-plane fault remains.
 - Return control immediately when Lucia owns the asynchronous next action; wait or monitor only when the user explicitly requests it.
 - Read live Codex context and pace-aware weekly allowance pressure without exposing conversation content.
 - Enforce a machine-readable weekly pacing gate before new model-backed work: allow a 5-point startup burst, preserve a 5-point end reserve, keep one active model worker, and never assume a manual reset.

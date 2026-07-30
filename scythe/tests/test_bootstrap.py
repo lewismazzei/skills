@@ -11,6 +11,8 @@ from unittest import mock
 
 
 MODULE_PATH = Path(__file__).parents[1] / "scripts" / "bootstrap.py"
+SKILL_PATH = Path(__file__).parents[1] / "SKILL.md"
+OPENAI_CONFIG_PATH = Path(__file__).parents[1] / "agents" / "openai.yaml"
 SPEC = importlib.util.spec_from_file_location("scythe_bootstrap", MODULE_PATH)
 bootstrap = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None
@@ -283,6 +285,17 @@ class ContinuationPolicyTests(unittest.TestCase):
         self.assertTrue(policy["status_only_allowed"])
         self.assertFalse(policy["mutations_allowed"])
         self.assertEqual(policy["required_before_final"], ["report-observed-state"])
+
+
+class SkillTriggerContractTests(unittest.TestCase):
+    def test_exact_nudge_is_an_implicit_acting_keyword(self) -> None:
+        skill = SKILL_PATH.read_text(encoding="utf-8")
+        openai_config = OPENAI_CONFIG_PATH.read_text(encoding="utf-8")
+
+        self.assertIn('exact `nudge`', skill)
+        self.assertIn("`nudge` means:", skill)
+        self.assertIn("ordinary `status` action-bearing", skill)
+        self.assertIn("allow_implicit_invocation: true", openai_config)
 
 
 if __name__ == "__main__":
