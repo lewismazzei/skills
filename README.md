@@ -317,6 +317,7 @@ npx skills add https://github.com/lewismazzei/skills/tree/main/scythe -g -a code
 Typical uses:
 
 - Invoke explicitly with `$scythe`, or send exact `nudge` in a Scythe ingress or controller thread to inspect the live state, take each needed safe immediate action, persist the frontier, and explain why action was needed.
+- Send exact `retro` for a read-only retrospective since the most recent human-authored message. Automated Lucia ingress messages remain evidence inside that period and never reset its start. The report separates real frontier changes from retries, repeated observations, and idle or stuck time.
 - Keep ordinary `status` strictly read-only. `nudge` is the short acting command; it does not wait, bypass pacing or authority gates, create a goal, or start duplicate work.
 - Use it in a fresh thread from any directory to load the current objective, frontier, worker exceptions, and exact next action without handoff confirmation.
 - Keep `control-plane.md` as a sub-16-KiB current-state index with a fixed section schema; bootstrap rejects historical diaries, stale controller claims, unexpected sections, and gapped next actions.

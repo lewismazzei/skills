@@ -1,13 +1,13 @@
 ---
 name: scythe
-description: Bootstrap and operate Lewis's Scythe control plane from any Codex working directory using its durable checkpoint, live Lucia worker state, and Codex usage pressure. Use for $scythe and for the exact keyword "nudge" in a Scythe ingress or controller thread.
+description: Bootstrap and operate Lewis's Scythe control plane from any Codex working directory using its durable checkpoint, live Lucia worker state, and Codex usage pressure. Use for $scythe and for the exact keywords "nudge" and "retro" in a Scythe ingress or controller thread.
 ---
 
 # Scythe Control Plane
 
 ## Bootstrap
 
-1. Classify the operator request before doing anything else. For an ordinary `status` request, run `python3 /home/lewis/.agents/skills/scythe/scripts/bootstrap.py --request status`. For `$scythe`, exact `nudge`, `continue`, or another acting request, run the same command with `--request continue`.
+1. Classify the operator request before doing anything else. For an ordinary `status` request or exact `retro`, run `python3 /home/lewis/.agents/skills/scythe/scripts/bootstrap.py --request status`. For `$scythe`, exact `nudge`, `continue`, or another acting request, run the same command with `--request continue`.
 2. Read `/home/lewis/projects/scythe/.codex/control-plane.md` completely as the durable control-plane checkpoint.
 3. Check `checkpoint.status`. If it is not `healthy`, reconcile the checkpoint to the current-state contract below before relying on it or giving a final response.
 4. Treat the script's canonical controller, worker, watcher, and usage state as newer than checkpoint prose. Preserve the objective, boundaries, and real operator frontier while removing superseded claims.
@@ -20,10 +20,19 @@ If the checkpoint is missing or malformed, reconstruct it from durable Scythe/Lu
 
 ## Read-only status
 
-- An ordinary `status`, “what is happening?”, or equivalent observation request is a strict read-only operation. Read the bootstrap report, checkpoint, Git refs, release manifests, worker records, and service state; then report them.
+- An ordinary `status`, exact `retro`, “what is happening?”, or equivalent observation request is a strict read-only operation. Read the bootstrap report, checkpoint, Git refs, release manifests, worker records, and service state; then report them.
 - During read-only status, do not edit files, update the checkpoint or controller registry, enqueue ingress, dispatch or recover workers, run Lucia with `--apply`, restart services, trigger a release, push, or request compaction.
 - Surface recoverable faults and the exact next acting operation, but leave both untouched. Only `$scythe`, exact `nudge`, `continue`, or an explicit change/recovery request authorizes the act-before-final workflow.
 - The bootstrap itself is read-only for every request. Its `continuation.mutations_allowed` field is the machine-readable authority boundary.
+
+## Retro keyword
+
+- Treat an operator message whose command is exact `retro` in a Scythe ingress or controller thread as a read-only retrospective request.
+- Start the period at the most recent preceding human-authored message. End it when `retro` starts. State both boundaries. Automated Lucia ingress messages are evidence inside the period and never reset its start. This includes watcher-delivered `Run $scythe for this operator message:` messages, `Lucia ...` lifecycle messages, and structured `continuation:` payloads.
+- Reconstruct the period from the thread and canonical durable records. Distinguish user actions, controller actions, Lucia actions, worker actions, and periods with no frontier change.
+- Report the intended outcome, material releases or retained work, faults and retries, idle or stuck intervals, usage or pacing effect, present consequence, and the main lesson. Do not count repeated observations as progress.
+- If a service is active but the frontier does not change, report the frontier as stalled. State the last material change and elapsed idle time.
+- `retro` must not edit files, update the checkpoint, dispatch or recover workers, acknowledge continuations, release, push, restart services, or otherwise advance the frontier. Use exact `nudge` for status plus action.
 
 ## Nudge keyword
 
@@ -46,6 +55,7 @@ If the checkpoint is missing or malformed, reconstruct it from durable Scythe/Lu
 ## Continue act-before-final gate
 
 - Apply this section only to `$scythe`, exact `nudge`, `continue`, or another acting request. Treat the bootstrap `continuation` object as a final-response gate. For an `active` or `unregistered` controller in acting mode, `status_only_allowed` is false.
+- Do not apply this section to exact `retro`. `retro` is always read-only.
 - Before answering an acting request, enumerate the checkpoint's exact next actions and execute every safe immediate non-overlapping action available in the foreground.
 - Do not report a recoverable control-plane fault as the terminal outcome. Diagnose and repair Scythe/Lucia orchestration faults directly, then resume the product frontier.
 - A worker marked `blocked`, a stale verifier, a dirty-source guard, an eligibility mismatch, or a stopped watcher is an incident to reconcile, not automatically a reason to stop.
