@@ -175,28 +175,6 @@ Typical uses:
 - Report verification only when checks failed, could not be run, or have important caveats.
 - Use the bundled `templates/grill-handoff-template.md` instead of storing reusable templates in project handoff directories.
 
-## manage-personal-skills
-
-Audit, install, rename, remove, and sync personal Codex skills while preserving the boundary between personal source skills and third-party installed skills.
-
-Install globally for Codex:
-
-```bash
-add-skill lewismazzei/skills/manage-personal-skills -y
-```
-
-Direct folder install:
-
-```bash
-npx skills add https://github.com/lewismazzei/skills/tree/main/manage-personal-skills -g -a codex -y
-```
-
-Typical uses:
-
-- Audit drift between `~/skills`, `~/.agents/skills`, and `~/.codex/skills`.
-- Keep third-party skills out of the personal source repo.
-- Normalize Codex runtime entries to symlinks into `.agents/skills`.
-
 ## advise-reasoning-effort
 
 Suggest the appropriate Codex reasoning effort before substantial work starts.
