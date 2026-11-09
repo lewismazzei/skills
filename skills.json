@@ -115,6 +115,11 @@
       "source": "lewismazzei/skills",
       "path": "pstack/architect",
       "commit": "0b62e753ce133af846e363ee6f1b26b1277895dd",
+      "upstream": {
+        "source": "cursor/plugins",
+        "path": "harness/pstack/claude-code/skills/architect",
+        "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c"
+      },
       "agents": [
         "claude-code",
         "codex"
