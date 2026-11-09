@@ -1,61 +1,6 @@
 {
   "skills": [
     {
-      "name": "advise-reasoning-effort",
-      "source": "lewismazzei/skills",
-      "path": "advise-reasoning-effort",
-      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "My own skill."
-    },
-    {
-      "name": "explore-prototype",
-      "source": "lewismazzei/skills",
-      "path": "explore-prototype",
-      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "My own skill."
-    },
-    {
-      "name": "guide-handoff-prompt",
-      "source": "lewismazzei/skills",
-      "path": "guide-handoff-prompt",
-      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "My own skill."
-    },
-    {
-      "name": "handoff-session",
-      "source": "lewismazzei/skills",
-      "path": "handoff-session",
-      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "My own skill."
-    },
-    {
-      "name": "improve-feature",
-      "source": "lewismazzei/skills",
-      "path": "improve-feature",
-      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "My own skill."
-    },
-    {
       "name": "git-workflow-and-versioning",
       "source": "addyosmani/agent-skills",
       "path": "skills/git-workflow-and-versioning",
@@ -566,17 +511,6 @@
       "reason": "pstack: explains why code is shaped as it is; architect and teach depend on it."
     },
     {
-      "name": "git-commit",
-      "source": "github/awesome-copilot",
-      "path": "skills/git-commit",
-      "commit": "99ec91c29bd8232ea9b1ee6b5adc40f40ab794fa",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "Making Conventional Commits."
-    },
-    {
       "name": "caveman-commit",
       "source": "juliusbrussee/caveman",
       "path": "skills/caveman-commit",
@@ -586,17 +520,6 @@
         "codex"
       ],
       "reason": "Terse Conventional Commits messages."
-    },
-    {
-      "name": "axi",
-      "source": "kunchenguid/axi",
-      "path": ".agents/skills/axi",
-      "commit": "b7dbc1324ce637f08835ce5c45783a24287511f2",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "Design rules for agent-facing CLIs."
     },
     {
       "name": "kun",
@@ -631,17 +554,6 @@
         "codex"
       ],
       "reason": "The no-mistakes validation pipeline, pinned to the installed CLI release."
-    },
-    {
-      "name": "find-skills",
-      "source": "vercel-labs/skills",
-      "path": "skills/find-skills",
-      "commit": "773fb2c7bbf16781670a3520affc4abd0c6151ae",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "Finding and installing skills."
     }
   ]
 }
