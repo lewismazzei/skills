@@ -7,6 +7,7 @@ The agent skills I use: my own, plus every third-party skill I have installed.
 - `skills.json` lists every installed skill with its source repository, pinned commit, agents, and why I keep it.
 - `./install.sh` installs exactly that list. `./install.sh --dry-run` prints the commands instead.
 - To update a skill, move its pin to a reviewed commit at least three days old, then run `./install.sh`.
+- A skill that ships with a tool (`"follows": "releases"`) is pinned to the tool's release tag and moves only with a stable release of that tool.
 - My own skills live in top-level directories, each with a section below.
 - A third-party skill I have modified lives under a folder named for its source, with the source's licence and a `CHANGES.md`.
 
