@@ -1,7 +1,0 @@
-interface:
-  display_name: "Scythe"
-  short_description: "Observe or safely advance the Scythe control plane"
-  default_prompt: "Use $scythe to operate the Scythe control plane. Treat exact nudge in a Scythe ingress or controller thread as an acting request."
-
-policy:
-  allow_implicit_invocation: true

@@ -12,17 +12,6 @@
       "reason": "My own skill."
     },
     {
-      "name": "dispatch",
-      "source": "lewismazzei/skills",
-      "path": "dispatch",
-      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "My own skill."
-    },
-    {
       "name": "explore-prototype",
       "source": "lewismazzei/skills",
       "path": "explore-prototype",
@@ -59,39 +48,6 @@
       "name": "improve-feature",
       "source": "lewismazzei/skills",
       "path": "improve-feature",
-      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "My own skill."
-    },
-    {
-      "name": "isolate",
-      "source": "lewismazzei/skills",
-      "path": "isolate",
-      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "My own skill."
-    },
-    {
-      "name": "pick-up-grilling-thread",
-      "source": "lewismazzei/skills",
-      "path": "pick-up-grilling-thread",
-      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "My own skill."
-    },
-    {
-      "name": "scythe",
-      "source": "lewismazzei/skills",
-      "path": "scythe",
       "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
       "agents": [
         "claude-code",
@@ -675,38 +631,6 @@
         "codex"
       ],
       "reason": "The no-mistakes validation pipeline, pinned to the installed CLI release."
-    },
-    {
-      "name": "autoreview",
-      "source": "openclaw/agent-skills",
-      "path": "skills/autoreview",
-      "commit": "cc208c601cb4db5a02278b9c48debc409eb475ed",
-      "agents": [
-        "codex"
-      ],
-      "reason": "Code review skill. The skills CLI now blocks this source, so reinstalling needs its risk flag."
-    },
-    {
-      "name": "impeccable",
-      "source": "pbakaus/impeccable",
-      "path": ".agents/skills/impeccable",
-      "commit": "5c5553b1d7f9e89bb833f9179cea681742a17720",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "Frontend design and critique."
-    },
-    {
-      "name": "deepsec-docs",
-      "source": "vercel-labs/deepsec",
-      "path": "packages/deepsec",
-      "commit": "ce646748b6b2d7b088107ac29944c4129c49f11d",
-      "agents": [
-        "claude-code",
-        "codex"
-      ],
-      "reason": "Using the deepsec vulnerability scanner."
     },
     {
       "name": "find-skills",
