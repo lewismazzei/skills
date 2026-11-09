@@ -1,76 +1,20 @@
 # Agent Skills
 
-Personal agent skills for AI coding agents.
+The agent skills I use: my own, plus every third-party skill I have installed.
 
-## Local workflow
+## How this repo works
 
-This repository is the source of truth for personal skills only. The active
-global Codex install lives outside this repo:
+- `skills.json` lists every installed skill with its source repository, pinned commit, agents, and why I keep it.
+- `./install.sh` installs exactly that list. `./install.sh --dry-run` prints the commands instead.
+- To update a skill, move its pin to a reviewed commit at least three days old, then run `./install.sh`.
+- My own skills live in top-level directories, each with a section below.
+- A third-party skill I have modified lives under a folder named for its source, with the source's licence and a `CHANGES.md`.
 
-- `~/skills`: personal skill source repo, committed and pushed to GitHub.
-- `~/.agents/skills`: real global install directory used by `npx skills`.
-- `~/.codex/skills`: Codex directory; user skill entries are symlinks to
-  `~/.agents/skills`, while Codex-managed `.system` skills remain here.
+Skills that other tools install themselves, such as terminal-browser's, are not listed.
 
-Install or update a pushed skill into the global Codex install:
+## pstack/architect
 
-```bash
-add-skill lewismazzei/skills/<skill-name> -y
-```
-
-Test local repo edits before pushing:
-
-```bash
-npx skills add ./<skill-name> -g -a codex -y
-```
-
-Refresh Codex symlinks after a manual install:
-
-```bash
-sync-skills-links
-```
-
-Audit skill source/install/runtime drift:
-
-```bash
-~/skills/manage-personal-skills/scripts/audit-skills.sh
-```
-
-## Golden flow
-
-Use the `manage-personal-skills` skill before changing skill installs, source
-skills, or Codex runtime links.
-
-Before changes:
-
-```bash
-~/skills/manage-personal-skills/scripts/audit-skills.sh
-```
-
-For personal skills:
-
-- Edit only this repo first.
-- Keep the skill directory name and `SKILL.md` frontmatter `name` in sync.
-- Update this `README.md` in the same change.
-- Commit and push the source repo before treating it as the new source of truth.
-- Install or refresh the active global copy from the pushed repo.
-- Ensure `~/.codex/skills/<skill-name>` is a symlink to `../../.agents/skills/<skill-name>`.
-
-For third-party skills:
-
-- Install into the global runtime, not this repo.
-- Keep third-party skill files out of `~/skills`.
-- Ensure the `.codex` entry is a symlink into `.agents`.
-
-After changes:
-
-```bash
-~/skills/manage-personal-skills/scripts/audit-skills.sh
-```
-
-Resolve all `ERROR` lines before committing. Prefer separate commits for
-separate intents: obsolete removals, personal skill additions or renames,
-executable sync fixes, and third-party install normalization.
+My copy of [pstack](https://github.com/cursor/plugins/tree/main/pstack)'s `architect` skill (Lauren Tan, MIT), without its optional step that points to `interrogate`, which I don't install. `pstack/architect/CHANGES.md` records the upstream commit and the change.
 
 ## dispatch
 

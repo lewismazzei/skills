@@ -1,0 +1,718 @@
+{
+  "skills": [
+    {
+      "name": "advise-reasoning-effort",
+      "source": "lewismazzei/skills",
+      "path": "advise-reasoning-effort",
+      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "My own skill."
+    },
+    {
+      "name": "dispatch",
+      "source": "lewismazzei/skills",
+      "path": "dispatch",
+      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "My own skill."
+    },
+    {
+      "name": "explore-prototype",
+      "source": "lewismazzei/skills",
+      "path": "explore-prototype",
+      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "My own skill."
+    },
+    {
+      "name": "guide-handoff-prompt",
+      "source": "lewismazzei/skills",
+      "path": "guide-handoff-prompt",
+      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "My own skill."
+    },
+    {
+      "name": "handoff-session",
+      "source": "lewismazzei/skills",
+      "path": "handoff-session",
+      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "My own skill."
+    },
+    {
+      "name": "improve-feature",
+      "source": "lewismazzei/skills",
+      "path": "improve-feature",
+      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "My own skill."
+    },
+    {
+      "name": "isolate",
+      "source": "lewismazzei/skills",
+      "path": "isolate",
+      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "My own skill."
+    },
+    {
+      "name": "pick-up-grilling-thread",
+      "source": "lewismazzei/skills",
+      "path": "pick-up-grilling-thread",
+      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "My own skill."
+    },
+    {
+      "name": "scythe",
+      "source": "lewismazzei/skills",
+      "path": "scythe",
+      "commit": "2ea0d8d42202cb01a35753b09221ec8519c5e657",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "My own skill."
+    },
+    {
+      "name": "git-workflow-and-versioning",
+      "source": "addyosmani/agent-skills",
+      "path": "skills/git-workflow-and-versioning",
+      "commit": "884f64649779cd92804417c0baf564813b111bfc",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "Git workflow, branching and versioning practice."
+    },
+    {
+      "name": "architect",
+      "source": "lewismazzei/skills",
+      "path": "pstack/architect",
+      "commit": "0b62e753ce133af846e363ee6f1b26b1277895dd",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: settles types and module shape before code. My copy without the interrogate step."
+    },
+    {
+      "name": "arena",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/arena",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: parallel design attempts; architect depends on it."
+    },
+    {
+      "name": "benchmark-checklist",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/benchmark-checklist",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: vets performance numbers; the explain-the-number principle points to it."
+    },
+    {
+      "name": "blast-radius",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/blast-radius",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: what a small change could break elsewhere, for my own use."
+    },
+    {
+      "name": "create-formal-verification-skill",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/create-formal-verification-skill",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: builds a formal check for a subsystem."
+    },
+    {
+      "name": "create-verification-skill",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/create-verification-skill",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: gives agents a scripted way to drive an app."
+    },
+    {
+      "name": "how",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/how",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: explains how code works; architect, blast-radius and teach depend on it."
+    },
+    {
+      "name": "in-your-own-words",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/in-your-own-words",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: has an agent restate the goal before starting."
+    },
+    {
+      "name": "maintain-formal-verification-skill",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/maintain-formal-verification-skill",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: keeps a formal check in line with its code."
+    },
+    {
+      "name": "maintain-verification-skill",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/maintain-verification-skill",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: keeps a verification skill in line with its app."
+    },
+    {
+      "name": "no-comments",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/no-comments",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: strips comments before review."
+    },
+    {
+      "name": "poteto-mode",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/poteto-mode",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: never invoked; arena, how, why and no-comments follow its rules for choosing helper models."
+    },
+    {
+      "name": "principle-attack-the-premise",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-attack-the-premise",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-boundary-discipline",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-boundary-discipline",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-build-the-lever",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-build-the-lever",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-encode-lessons-in-structure",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-encode-lessons-in-structure",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-exhaust-the-design-space",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-exhaust-the-design-space",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-experience-first",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-experience-first",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-explain-the-number",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-explain-the-number",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-fix-root-causes",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-fix-root-causes",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-foundational-thinking",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-foundational-thinking",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-guard-the-context-window",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-guard-the-context-window",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-laziness-protocol",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-laziness-protocol",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-make-operations-idempotent",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-make-operations-idempotent",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-migrate-callers-then-delete-legacy-apis",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-migrate-callers-then-delete-legacy-apis",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-minimize-reader-load",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-minimize-reader-load",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-model-the-domain",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-model-the-domain",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-never-block-on-the-human",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-never-block-on-the-human",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-outcome-oriented-execution",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-outcome-oriented-execution",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-prove-it-works",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-prove-it-works",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-redesign-from-first-principles",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-redesign-from-first-principles",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-separate-before-serializing-shared-state",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-separate-before-serializing-shared-state",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-sequence-verifiable-units",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-sequence-verifiable-units",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-subtract-before-you-add",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-subtract-before-you-add",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-test-behavior-not-implementation",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-test-behavior-not-implementation",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "principle-type-system-discipline",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/principle-type-system-discipline",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack principle, cited by name and by the other pstack skills."
+    },
+    {
+      "name": "show-me-your-work",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/show-me-your-work",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: decision log for large work; the prove-it-works principle points to it."
+    },
+    {
+      "name": "statechart",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/statechart",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: draws user flows as charts checked by a TLA+ model."
+    },
+    {
+      "name": "tdd",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/tdd",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: test-first bug fixes."
+    },
+    {
+      "name": "teach",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/teach",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: plain explanations of a change or subsystem, for my own use."
+    },
+    {
+      "name": "technical-writing",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/technical-writing",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: docs, READMEs, PR descriptions and commit messages to a standard."
+    },
+    {
+      "name": "thermo-nuclear-code-quality-review",
+      "source": "cursor/plugins",
+      "path": "cursor-team-kit/skills/thermo-nuclear-code-quality-review",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "codex"
+      ],
+      "reason": "Cursor's team kit: strict maintainability audit, for my own use."
+    },
+    {
+      "name": "typescript-best-practices",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/typescript-best-practices",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: TypeScript rules."
+    },
+    {
+      "name": "unslop",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/unslop",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: removes AI tells from prose."
+    },
+    {
+      "name": "why",
+      "source": "cursor/plugins",
+      "path": "harness/pstack/claude-code/skills/why",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "pstack: explains why code is shaped as it is; architect and teach depend on it."
+    },
+    {
+      "name": "git-commit",
+      "source": "github/awesome-copilot",
+      "path": "skills/git-commit",
+      "commit": "99ec91c29bd8232ea9b1ee6b5adc40f40ab794fa",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "Making Conventional Commits."
+    },
+    {
+      "name": "caveman-commit",
+      "source": "juliusbrussee/caveman",
+      "path": "skills/caveman-commit",
+      "commit": "8909f6af8806897cbb8330c11028eee168ad7cc7",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "Terse Conventional Commits messages."
+    },
+    {
+      "name": "axi",
+      "source": "kunchenguid/axi",
+      "path": ".agents/skills/axi",
+      "commit": "b7dbc1324ce637f08835ce5c45783a24287511f2",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "Design rules for agent-facing CLIs."
+    },
+    {
+      "name": "kun",
+      "source": "kunchenguid/kun",
+      "path": "skills/kun",
+      "commit": "726eb6dca6ad05c3b249af9c477e90f5de55ed50",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "Kun Chen's views, from his public writing."
+    },
+    {
+      "name": "lavish",
+      "source": "kunchenguid/lavish-axi",
+      "path": "skills/lavish",
+      "commit": "ae66e1ad082b192930f19800ad56d4d322f577e4",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "Review boards for rich HTML artifacts."
+    },
+    {
+      "name": "no-mistakes",
+      "source": "kunchenguid/no-mistakes",
+      "path": "skills/no-mistakes",
+      "commit": "02144b005064e825485b39d03d718a0047c622f6",
+      "tag": "v1.106.1",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "The no-mistakes validation pipeline, pinned to the installed CLI release."
+    },
+    {
+      "name": "autoreview",
+      "source": "openclaw/agent-skills",
+      "path": "skills/autoreview",
+      "commit": "cc208c601cb4db5a02278b9c48debc409eb475ed",
+      "agents": [
+        "codex"
+      ],
+      "reason": "Code review skill. The skills CLI now blocks this source, so reinstalling needs its risk flag."
+    },
+    {
+      "name": "impeccable",
+      "source": "pbakaus/impeccable",
+      "path": ".agents/skills/impeccable",
+      "commit": "5c5553b1d7f9e89bb833f9179cea681742a17720",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "Frontend design and critique."
+    },
+    {
+      "name": "deepsec-docs",
+      "source": "vercel-labs/deepsec",
+      "path": "packages/deepsec",
+      "commit": "ce646748b6b2d7b088107ac29944c4129c49f11d",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "Using the deepsec vulnerability scanner."
+    },
+    {
+      "name": "find-skills",
+      "source": "vercel-labs/skills",
+      "path": "skills/find-skills",
+      "commit": "773fb2c7bbf16781670a3520affc4abd0c6151ae",
+      "agents": [
+        "claude-code",
+        "codex"
+      ],
+      "reason": "Finding and installing skills."
+    }
+  ]
+}
