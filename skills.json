@@ -536,8 +536,8 @@
       "name": "lavish",
       "source": "kunchenguid/lavish-axi",
       "path": "skills/lavish",
-      "commit": "69bf3090b24a04773ffd05d2e0b23d91ca41923b",
-      "tag": "lavish-axi-v0.1.96",
+      "commit": "79aa0a18dba9c1a1dcec6db19d2ef4eb7643754b",
+      "tag": "lavish-axi-v0.1.97",
       "follows": "releases",
       "agents": [
         "claude-code",
