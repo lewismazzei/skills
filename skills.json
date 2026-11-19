@@ -53,7 +53,7 @@
       "name": "blast-radius",
       "source": "cursor/plugins",
       "path": "harness/pstack/claude-code/skills/blast-radius",
-      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "commit": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
       "agents": [
         "claude-code",
         "codex"
@@ -86,7 +86,7 @@
       "name": "how",
       "source": "cursor/plugins",
       "path": "harness/pstack/claude-code/skills/how",
-      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "commit": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
       "agents": [
         "claude-code",
         "codex"
@@ -427,7 +427,7 @@
       "name": "statechart",
       "source": "cursor/plugins",
       "path": "harness/pstack/claude-code/skills/statechart",
-      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "commit": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
       "agents": [
         "claude-code",
         "codex"
@@ -449,7 +449,7 @@
       "name": "teach",
       "source": "cursor/plugins",
       "path": "harness/pstack/claude-code/skills/teach",
-      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "commit": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
       "agents": [
         "claude-code",
         "codex"
@@ -503,7 +503,7 @@
       "name": "why",
       "source": "cursor/plugins",
       "path": "harness/pstack/claude-code/skills/why",
-      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "commit": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
       "agents": [
         "claude-code",
         "codex"
